@@ -1,0 +1,25 @@
+{
+  "name": "selected-verifier-zkp",
+  "version": "1.0.0",
+  "description": "generate a zkp which is verifiable only from a certain verifier and noone else",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/enricobottazzi/selected-verifier-zkp.git"
+  },
+  "author": "Enrico Bottazzi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/enricobottazzi/selected-verifier-zkp/issues"
+  },
+  "homepage": "https://github.com/enricobottazzi/selected-verifier-zkp#readme",
+  "dependencies": {
+    "@semaphore-protocol/group": "^2.0.0",
+    "circom_tester": "^0.0.14",
+    "circomlib": "^2.0.5",
+    "ethers": "^5.7.0"
+  }
+}
