@@ -18,7 +18,8 @@ bash ...
 
 ## To do 
 
-- [] Try the input with a known private key expressed in tuple! 
+- [v] Try the input with a known private key expressed in tuple! 
+- [] Add public input in circuit instantiation
 
 
 ## Format 

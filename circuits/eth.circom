@@ -1,5 +1,5 @@
 pragma circom 2.0.2;
 
-include "../circom-ecdsa/circuits/eth_addr.circom";
+include "./lib/privkey-to-addr-checker.circom";
 
-component main = PrivKeyToAddr(64, 4);
+component main = PrivKeyToAddrChecker(64, 4);
