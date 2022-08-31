@@ -2,6 +2,7 @@
 const path = require("path");
 const wasm_tester = require("circom_tester").wasm;
 const ethers = require('ethers');
+const { Group } = require("@semaphore-protocol/group")
 
 // for converting privkey to 4-tuple
 function bigintToTuple(x) {
@@ -17,11 +18,43 @@ function bigintToTuple(x) {
   return ret;
 }
 
-let validProof
-let invalidProof
+describe("Designated Verifier Testing", function() {
 
-describe("Prover to Designated Verifier", function() {
-  this.timeout(1000 * 1000);
+    this.timeout(1000 * 1000);
+    let circuit = await wasm_tester(path.join(__dirname, "../circuits", "svp.circom"));
+
+    // Create a merkle tree and add leaves 
+    const mt = new Group(32)
+    let leaves = ["12345", "7542394", "1234697"]
+    mt.addMembers(leaves)   
+
+    // Generate merkleProof for leaf 7542394
+    let merkleProof = mt.generateProofOfMembership(mt.indexOf(leaves[1]))
+
+
+    describe("Prover to Designated Verifier", function() {
+
+
+
+        // Prover generates a validProof
+
+        // invalidProof
+
+
+        
+    });
+
+    describe("Designated Verifier to Third Party", function() {
+
+        
+        
+    });
+
+});
+
+
+
+
 
   it("verify a valid proof coming from the prover to the designated verifier", async () => {
     let circuit = await wasm_tester(path.join(__dirname, "../circuits", "svp.circom"));

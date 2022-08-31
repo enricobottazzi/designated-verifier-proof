@@ -1,3 +1,6 @@
 [submodule "circom-ecdsa"]
 	path = circom-ecdsa
 	url = https://github.com/0xPARC/circom-ecdsa
+[submodule "semaphore"]
+	path = semaphore
+	url = https://github.com/semaphore-protocol/semaphore

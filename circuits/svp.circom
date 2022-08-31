@@ -1,5 +1,5 @@
 pragma circom 2.0.2;
 
-include "./lib/selected-verifier-proof.circom";
+include "./lib/selected-verifier-proof2.circom";
 
-component main = SelectedVerifierProof {public [root,addr]} (64, 4, 32);
+component main  { public [root,addr]} = SelectedVerifierProof(64, 4, 32);

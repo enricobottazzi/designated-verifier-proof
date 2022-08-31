@@ -8,6 +8,11 @@ Inspired by :
 - [Jordi Baylina - ZKP and SSI - Iden3](https://www.youtube.com/watch?v=Rd6SMShk7-c&t=998s)
 - [Markus Jakobsson - Designated Verifier Proofs and Their Applications paper](http://markus-jakobsson.com/papers/jakobsson-eurocrypt96.pdf)
 
+## Setup 
+
+- Clone submodules
+- Install the dependencies
+
 ## Key concept 
 
 - [ ] Add explanation of the logic of the circuit "I prove that I know your private key or that I know X"

@@ -1,90 +1,31 @@
 pragma circom 2.0.0;
 
-include "../../node_modules/circomlib/circuits/poseidon.circom";
-include "../../node_modules/circomlib/circuits/mux1.circom";
 include "../../circom-ecdsa/circuits/eth_addr.circom";
-
-
-template PrivKeyToAddrChecker(n, k) {
-
-    signal input privkey[k];
-    signal input addr;
-    signal output out;
-
-    component addr1 = PrivKeyToAddr(n, k);
-
-    for (var i = 0; i < k; i++) {
-        addr1.privkey[i] <== privkey[i];
-    }
-
-    component eq = IsEqual();
-
-    eq.in[0] <== addr1.addr;
-    eq.in[1] <== addr;
-
-    out <== eq.out;
-    
-}
-
-
-template MerkleTreeInclusionProof(nLevels) {
-    signal input leaf;
-    signal input pathIndices[nLevels];
-    signal input siblings[nLevels];
-    signal input root;
-
-    signal computedRoot;
-
-    signal output out;
-
-    component poseidons[nLevels];
-    component mux[nLevels];
-    component eq = IsEqual();
-
-    signal hashes[nLevels + 1];
-    hashes[0] <== leaf;
-
-    for (var i = 0; i < nLevels; i++) {
-        pathIndices[i] * (1 - pathIndices[i]) === 0;
-
-        poseidons[i] = Poseidon(2);
-        mux[i] = MultiMux1(2);
-
-        mux[i].c[0][0] <== hashes[i];
-        mux[i].c[0][1] <== siblings[i];
-
-        mux[i].c[1][0] <== siblings[i];
-        mux[i].c[1][1] <== hashes[i];
-
-        mux[i].s <== pathIndices[i];
-
-        poseidons[i].inputs[0] <== mux[i].out[0];
-        poseidons[i].inputs[1] <== mux[i].out[1];
-
-        hashes[i + 1] <== poseidons[i].out;
-    }
-
-    computedRoot <== hashes[nLevels];
-
-    eq.in[0] <== computedRoot;
-    eq.in[1] <== root;
-
-    out <== eq.out;
-}
-
+include "../../semaphore/circuits/tree.circom";
 
 template SelectedVerifierProof(n, k, nLevels){
 
+    // inputs for semaphore's tree.circom circuit
     signal input leaf;
     signal input pathIndices[nLevels];
     signal input siblings[nLevels];
+
+    // checker against the output of the semaphore's tree.circom circuit
     signal input root;
 
+    // input for PrivKeyToAddr
     signal input privkey[k];
+
+    // checker against the output of PrivKeyToAddr
     signal input addr;
 
+    // output of the circuit => 1 if at least one of the condition is valid, 0 otherwise
     signal output out;
 
+    component eq1 = IsEqual();
+    component eq2 = IsEqual();
+
+    // compute proof #1
     component mt = MerkleTreeInclusionProof(nLevels);
 
     mt.leaf <== leaf;
@@ -92,21 +33,27 @@ template SelectedVerifierProof(n, k, nLevels){
         mt.siblings[i] <== siblings[i];
         mt.pathIndices[i] <== pathIndices[i];
     }
-    mt.root <== root;
 
-    component pk = PrivKeyToAddrChecker(n,k);
+    // verify proof #1 => Does the computed root match the one provided as input?
+    eq1.in[0] <== mt.root;
+    eq1.in[1] <== root;
+
+    // compute proof #2 
+    component pk2addr = PrivKeyToAddr(n, k);
 
     for (var i = 0; i < k; i++) {
-        pk.privkey[i] <== privkey[i];
+        pk2addr.privkey[i] <== privkey[i];
     }
 
-    pk.addr <== addr;
+    // verify proof #2 => Does the computed address match the one provided as input?
+    eq2.in[0] <== pk2addr.addr;
+    eq2.in[1] <== addr;
 
+    // check if at least one of the proofs is valid
     component or = OR();
 
-    or.a <== mt.out;
-    or.b <== pk.out;
+    or.a <== eq1.out;
+    or.b <== eq2.out;
 
     out <== or.out;
-
 }
