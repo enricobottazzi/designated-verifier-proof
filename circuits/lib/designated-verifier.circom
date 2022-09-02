@@ -3,7 +3,7 @@ pragma circom 2.0.0;
 include "../../circom-ecdsa/circuits/eth_addr.circom";
 include "../../semaphore/circuits/tree.circom";
 
-template SelectedVerifierProof(n, k, nLevels){
+template DesignatedVerifer(n, k, nLevels){
 
     // inputs for semaphore's tree.circom circuit
     signal input leaf;

@@ -40,7 +40,7 @@ describe("Designated Verifier Testing", function async() {
 
         it("should verify a valid proof (based on 1st condition) coming from the prover", async () => {
         
-            let circuit = await wasm_tester(path.join(__dirname, "../circuits", "svp.circom"));
+            let circuit = await wasm_tester(path.join(__dirname, "../circuits", "dv.circom"));
 
             // Prover generates a random privkey
             const wallet2 = ethers.Wallet.createRandom()
@@ -69,7 +69,7 @@ describe("Designated Verifier Testing", function async() {
 
         it("shouldn't verify an invalid proof (both conditions are not met) coming from the prover", async () => {
         
-            let circuit = await wasm_tester(path.join(__dirname, "../circuits", "svp.circom"));
+            let circuit = await wasm_tester(path.join(__dirname, "../circuits", "dv.circom"));
 
             // Prover generates a random privkey that doesn't satisfy 1st condition (remember, the prover doesn't know the verifier's private key)
             const wallet2 = ethers.Wallet.createRandom()
@@ -95,6 +95,35 @@ describe("Designated Verifier Testing", function async() {
     
             // Verifier should check that proof is not valid
             await circuit.assertOut(w, {out: "0"})
+            await circuit.checkConstraints(w);
+        });
+    });
+
+    describe("Designated Verifier to Third Party Verifier", function () {
+    
+        it("should verify a forged proof for 1st condition and verified on 2nd condition coming from designated verifier", async () => {
+        
+            let circuit = await wasm_tester(path.join(__dirname, "../circuits", "dv.circom"));
+
+            let nonMemberLeaf = BigInt("6742389")
+        
+            // Designated Verifier generate a false proof for the 1st condition and a valid proof for the 2nd condition (he certainly knows his own private key)
+            let input = {
+                leaf: nonMemberLeaf,
+                pathIndices: merkleProof.pathIndices,
+                siblings: merkleProof.siblings,
+                root: merkleProof.root,
+                privkey: bigintToTuple(BigInt(verifierPrivKey)),
+                addr: verifierAddress,
+            }
+
+            const w = await circuit.calculateWitness(
+                input,
+                true
+            );
+
+            // Third party Verifier should check that the proof is valid => He knows that the 2nd condition is true so he cannot say if 1st condition is true or false.
+            await circuit.assertOut(w, {out: "1"})
             await circuit.checkConstraints(w);
         });
 
