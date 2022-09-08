@@ -3,7 +3,7 @@ pragma circom 2.0.0;
 include "../../circom-ecdsa/circuits/eth_addr.circom";
 include "../../circom-ecdsa/circuits/ecdsa.circom";
 
-template DesignatedMessageReader(n, k){
+template DesignatedVerifierSignature(n, k){
 
     // inputs for ecdsa ECDSAVerifyNoPubkeyCheck circuit
     signal input r[k];

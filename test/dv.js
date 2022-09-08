@@ -3,6 +3,8 @@ const path = require("path");
 const wasm_tester = require("circom_tester").wasm;
 const ethers = require('ethers');
 const { Group } = require("@semaphore-protocol/group")
+import { expect, assert } from 'chai';
+
 
 // for converting privkey to 4-tuple
 function bigintToTuple(x) {
@@ -18,7 +20,7 @@ function bigintToTuple(x) {
   return ret;
 }
 
-describe("Designated Verifier Testing", function async() {
+describe("Designated Verifier Testing", function () {
 
     this.timeout(1000 * 1000);
 
@@ -40,7 +42,7 @@ describe("Designated Verifier Testing", function async() {
 
         it("should verify a valid proof (based on 1st condition) coming from the prover", async () => {
         
-            let circuit = await wasm_tester(path.join(__dirname, "../circuits", "dv.circom"));
+            let circuit = await wasm_tester(path.join(__dirname, "../circuits", "dvs.circom"));
 
             // Prover generates a random privkey
             const wallet2 = ethers.Wallet.createRandom()
@@ -69,7 +71,7 @@ describe("Designated Verifier Testing", function async() {
 
         it("shouldn't verify an invalid proof (both conditions are not met) coming from the prover", async () => {
         
-            let circuit = await wasm_tester(path.join(__dirname, "../circuits", "dv.circom"));
+            let circuit = await wasm_tester(path.join(__dirname, "../circuits", "dvs.circom"));
 
             // Prover generates a random privkey that doesn't satisfy 1st condition (remember, the prover doesn't know the verifier's private key)
             const wallet2 = ethers.Wallet.createRandom()
@@ -103,7 +105,7 @@ describe("Designated Verifier Testing", function async() {
     
         it("should verify a forged proof for 1st condition and verified on 2nd condition coming from designated verifier", async () => {
         
-            let circuit = await wasm_tester(path.join(__dirname, "../circuits", "dv.circom"));
+            let circuit = await wasm_tester(path.join(__dirname, "../circuits", "dvs.circom"));
 
             let nonMemberLeaf = BigInt("6742389")
         

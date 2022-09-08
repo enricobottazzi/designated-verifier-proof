@@ -9,36 +9,29 @@ Inspired by :
 
 ## Setup 
 
-- Clone submodules
+- Clone submodule
+- Go into submodule
 - Install the dependencies
 
-## Key concept 
+## Key concept of Designated Verifier ZKproof
 
 - [ ] Add explanation of the logic of the circuit "I prove that I know your private key or that I know X"
 
-## Circuit Architecture 
+## Designated Verifier Signature ZKProof
 
 - [ ] Add Miro illustration of circuit design
 
 ## Plug into your SNARK
 
-`npm install package name`
-
 - [ ] Add instructions about how to modify your current circuit to accomodate the SVZkp
-
-## Tutorial
-
-1) Add it to Merkle Tree Checker
-2) Add it to Semaphore
-
-## Error Handling
 
 
 ## To do 
 
-- [ ] Add public input in circuit instantiation
-- [ ] Further circuit testing 
-- [ ] Add table for tests 
+- [ ] Move function to support testing inside an utils folder 
+- [ ] How can I access someone's publickey?
+- [ ] Modify usage of message hash
+- [ ] What is the sense of ff javascript?
 
 Initial Tree => Leaves #1, #2, #3, #4 
 
@@ -52,5 +45,8 @@ Proof is valid => Verifier knows that the prover doesn't know his private key so
 
 Combo 3 => verifier send an invalid proof to a third party => verified? I don’t know why?
 Combo 4 => Verifier send a valid proof to a third party => Verified? I don't know why?
+
+
+
 
 
