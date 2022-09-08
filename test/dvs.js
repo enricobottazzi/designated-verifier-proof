@@ -3,7 +3,7 @@
 const path = require("path");
 const wasm_tester = require("circom_tester").wasm;
 const ethers = require('ethers');
-const {sign, Point } = require('@noble/secp256k1')
+const {sign, Point} = require('@noble/secp256k1')
 
 
 // for converting privkey to 4-tuple
@@ -95,19 +95,6 @@ describe("Designated Verifier Testing", function async() {
             const wallet3 = ethers.Wallet.createRandom()
             let randPrivKey = wallet3.privateKey   
             
-            let input = {
-                r: r_array,
-                s: s_array,
-                msghash: msghash_array,
-                pubkey: [pub0_array, pub1_array],
-                privkey: bigintToTuple(BigInt(randPrivKey)),
-                addr: verifierAddress,
-            }
-
-            console.log(input)
-
-
-
             // Generate Witness that satisfies 1st condition (msg signature) and doesn't satisfy 2nd condition (priv key to address)
             let witness = await circuit.calculateWitness({"r": r_array,
                                                           "s": s_array,
@@ -120,8 +107,6 @@ describe("Designated Verifier Testing", function async() {
             // Evaluate witness to output 1 (namely true) 
             await circuit.assertOut(witness, {out: "1"})
             await circuit.checkConstraints(witness);
-           
-
         });
 
         it("shouldn't verify an invalid proof (both conditions are not met) coming from the prover", async () => {
@@ -206,7 +191,5 @@ describe("Designated Verifier Testing", function async() {
             await circuit.checkConstraints(witness);
         
         });
-
     });
-
 });
