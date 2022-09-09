@@ -4,54 +4,7 @@ const path = require("path");
 const wasm_tester = require("circom_tester").wasm;
 const ethers = require('ethers');
 const {sign, Point} = require('@noble/secp256k1')
-
-
-// for converting privkey to 4-tuple
-function bigintToTuple(x) {
-  // 2 ** 64
-  let mod = 18446744073709551616n
-  let ret = [0n, 0n, 0n, 0n];
-
-  var x_temp = x;
-  for (var idx = 0; idx < 4; idx++) {
-    ret[idx] = x_temp % mod;
-    x_temp = x_temp / mod;
-  }
-  return ret;
-}
-
-function bigint_to_array(n, k, x) {
-    let mod = 1n;
-    for (var idx = 0; idx < n; idx++) {
-        mod = mod * 2n;
-    }
-
-    let ret = [];
-    var x_temp = x;
-    for (var idx = 0; idx < k; idx++) {
-        ret.push(x_temp % mod);
-        x_temp = x_temp / mod;
-    }
-    return ret;
-}
-
-function bigint_to_Uint8Array(x) {
-    var ret = new Uint8Array(32);
-    for (var idx = 31; idx >= 0; idx--) {
-        ret[idx] = Number(x % 256n);
-        x = x / 256n;
-    }
-    return ret;
-}
-
-function Uint8Array_to_bigint(x) {
-    var ret = 0n;
-    for (var idx = 0; idx < x.length; idx++) {
-        ret = ret * 256n;
-        ret = ret + BigInt(x[idx]);
-    }
-    return ret;
-}
+const {bigintToTuple, bigint_to_array, bigint_to_Uint8Array, Uint8Array_to_bigint } = require ("../utils/convertors.js");
 
 describe("Designated Verifier Testing", function async() {
 
@@ -73,11 +26,12 @@ describe("Designated Verifier Testing", function async() {
             
             let circuit = await wasm_tester(path.join(__dirname, "../circuits", "dvs.circom"));
             
-            // msgHash to be Signed
-            let msghash_bigint = BigInt(1234)
-            let msghash = bigint_to_Uint8Array(msghash_bigint);
+            // message to be Signed
+            let message = "Hello World";
+            let msghash_bigint = BigInt(ethers.utils.solidityKeccak256(["string"], [message]))
+            let msghash = bigint_to_Uint8Array(msghash_bigint);     
            
-            // prover signs message
+            // prover signs the hashed message
             var sig = await sign(msghash, bigint_to_Uint8Array(BigInt(proverPrivKey)), {canonical: true, der: false})
             var r = sig.slice(0, 32);
             var r_bigint = Uint8Array_to_bigint(r);
@@ -113,11 +67,13 @@ describe("Designated Verifier Testing", function async() {
             
             let circuit = await wasm_tester(path.join(__dirname, "../circuits", "dvs.circom"));
             
-            // msgHash to be Signed
-            let msghash_bigint = BigInt(1234)
-            let msghash = bigint_to_Uint8Array(msghash_bigint);
-            
-            // prover signs message
+            // message to be Signed
+            let message = "Hello World";
+            // hash the message 
+            let msghash_bigint = BigInt(ethers.utils.solidityKeccak256(["string"], [message]))
+            let msghash = bigint_to_Uint8Array(msghash_bigint);     
+      
+            // prover signs the hashed message
             var sig = await sign(msghash, bigint_to_Uint8Array(BigInt(proverPrivKey)), {canonical: true, der: false})
             var r = sig.slice(0, 32);
             var r_bigint = Uint8Array_to_bigint(r);
@@ -157,11 +113,13 @@ describe("Designated Verifier Testing", function async() {
             
             let circuit = await wasm_tester(path.join(__dirname, "../circuits", "dvs.circom"));
             
-            // msghash to be Signed as part of the forged proof
-            let msghash_bigint = BigInt(123456)
-            let msghash = bigint_to_Uint8Array(msghash_bigint);
-
-            // Designated Verifier signs a message
+            // false message that the Designated Verifier pretends that the prover signed;
+            let message = "Fuck The World";
+            // hash the message 
+            let msghash_bigint = BigInt(ethers.utils.solidityKeccak256(["string"], [message]))
+            let msghash = bigint_to_Uint8Array(msghash_bigint);     
+            
+            // Designated Verifier signs the hashed message
             var sig = await sign(msghash, bigint_to_Uint8Array(BigInt(verifierPrivKey)), {canonical: true, der: false})            
 
             var r = sig.slice(0, 32);
