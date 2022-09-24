@@ -9,17 +9,36 @@ Inspired by :
 
 ## Setup 
 
-- Clone submodule
-- Go into submodule
-- Install the dependencies
+- Install package dependencies `npm i`
+- Clone submodule `git clone https://github.com/0xPARC/circom-ecdsa`
+- Install sub module dependencies `cd circom-ecdsa / npm i`
 
 ## Key concept of Designated Verifier ZKproof
 
-- [ ] Add explanation of the logic of the circuit "I prove that I know your private key or that I know X"
+The essence of the Designated Verifier ZKproof is based on a simple yet very powerful concept. Let's consider an example. In a non-designated Verifier ZKproof context a prover is proving that she knows a preimage of a public hash without revealing the preimage. In this scenario the prover generates a proof and passes it to a Verifier. The verifier is able to check that prover know the preimage of a public hash. The verifier is now also able to share this proof with third parties and *anyone will be persuaded* by the fact "prover knows the preimage of the public hash".
 
-## Designated Verifier Signature ZKProof
+In a Designated Verifier ZKproof scenario the prover is proving that she knows a preimage of a public hash (without revealing the preimage) *OR* that she knows the private key of the designated verifier. Again, the prover generates the proof and passes it to the verifier. We suppose that the key of the verifier hasn't been compromised by the prover and that the verifier is aware of that. Starting from the proof, the verifier is able to check that prover know the preimage of a public hash. The verifier is now not able to share this proof with third parties as other parties wouldn't know whether: 
+
+- The proof shared by the designated verifier verifies because the prover knows the preimage of the public hash
+- The proof shared by the designated verifier verifies because the verifier know his own private key (which is true by definition)
+
+In this second scenario *only the Designated Verifier will be persuaded* by the fact "prover knows the preimage of the public hash".
+
+## Circuit Design 
+
+Let's get a bit more technical.
 
 - [ ] Add Miro illustration of circuit design
+
+## Testing
+
+To test `mocha test/dvs.js`. Likely you will run into some errors. That's because your computer is not able to handle the huge number of constraints and gates included in this circuit. 
+
+Test #1 => Prover wants to communicate something to the designated verifier 
+"I have a secret x". Sign the message and use it inside the zkSNARK. 
+
+Test #2 => Designated verifier wants to share with other people the message sent him by the Prover 
+Test #3 => Designated verifier wants to share with other people forging a false message sent him by the Prover 
 
 ## Plug into your SNARK
 
@@ -27,19 +46,15 @@ Inspired by :
 
 ## To do 
 
-- [ ] Move function to support testing inside an utils folder 
-- [ ] How can I access someone's publickey?
-- [ ] Modify usage of message hash
+WIP TO DO BOARDS => https://github.com/users/enricobottazzi/projects/6
+
+- [ ] Add address as input somehow
+
+
+## Questions 
+
+- [ ] How can I access someone's publickey? => By signature actually! 
 - [ ] What is the sense of ff javascript?
 
-Test #1 => Prover wants to communicate something to the designated verifier 
-
-"I have a secret x". Sign the message and use it inside the zkSNARK. 
-
-Test #2 => Designated verifier wants to share with other people the message sent him by the Prover 
-
-Test #3 => Designated verifier wants to share with other people forging a false message sent him by the Prover 
-
-
-
+## Run a server
 
