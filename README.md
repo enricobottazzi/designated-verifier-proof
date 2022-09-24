@@ -32,6 +32,13 @@ Let's get a bit more technical.
 
 ## Testing
 
+To test `mocha test/dvs.js`. Likely you will run into some errors. That's because your computer is not able to handle the huge number of constraints and gates included in this circuit. 
+
+Test #1 => Prover wants to communicate something to the designated verifier 
+"I have a secret x". Sign the message and use it inside the zkSNARK. 
+
+Test #2 => Designated verifier wants to share with other people the message sent him by the Prover 
+Test #3 => Designated verifier wants to share with other people forging a false message sent him by the Prover 
 
 ## Plug into your SNARK
 
@@ -39,19 +46,15 @@ Let's get a bit more technical.
 
 ## To do 
 
-- [ ] Move function to support testing inside an utils folder 
-- [ ] How can I access someone's publickey?
-- [ ] Modify usage of message hash
+WIP TO DO BOARDS => https://github.com/users/enricobottazzi/projects/6
+
+- [ ] Add address as input somehow
+
+
+## Questions 
+
+- [ ] How can I access someone's publickey? => By signature actually! 
 - [ ] What is the sense of ff javascript?
 
-Test #1 => Prover wants to communicate something to the designated verifier 
-
-"I have a secret x". Sign the message and use it inside the zkSNARK. 
-
-Test #2 => Designated verifier wants to share with other people the message sent him by the Prover 
-
-Test #3 => Designated verifier wants to share with other people forging a false message sent him by the Prover 
-
-
-
+## Run a server
 
