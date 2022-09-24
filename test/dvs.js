@@ -27,7 +27,7 @@ describe("Designated Verifier Testing", function async() {
             // let circuit = await wasm_tester(path.join(__dirname, "../circuits", "dvs.circom"));
             
             // message to be Signed
-            let message = "Hello World";
+            let message = "Hello World!!!!";
             let msghash_bigint = BigInt(ethers.utils.solidityKeccak256(["string"], [message]))
             let msghash = bigint_to_Uint8Array(msghash_bigint);     
            
@@ -53,8 +53,6 @@ describe("Designated Verifier Testing", function async() {
             "s": s_array,
             "msghash": msghash_array,
             "pubkey": [pub0_array, pub1_array],
-            "privkey": bigintToTuple(BigInt(randPrivKey)),
-            "addr": verifierAddress,
             }
 
             // input to json

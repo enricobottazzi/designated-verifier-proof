@@ -33,6 +33,8 @@ Let's get a bit more technical.
 
 ## Testing
 
+Test `bash scripts/build_witness.sh`
+
 To test `mocha test/dvs.js`. Likely you will run into some errors. That's because your computer is not able to handle the huge number of constraints and gates included in this circuit. 
 
 Test #1 => Prover wants to communicate something to the designated verifier 
@@ -45,12 +47,18 @@ Test #3 => Designated verifier wants to share with other people forging a false 
 
 - [ ] Add instructions about how to modify your current circuit to accomodate the SVZkp
 
+## Done 
+
+Testing Signature with valid and false signature
+
+
 ## To do 
 
 WIP TO DO BOARDS => https://github.com/users/enricobottazzi/projects/6
 
 - [ ] Add address as input somehow
-
+- [ ] Test is not working, check again 
+- [ ] Modify circuit to accomodate pubkey check
 
 ## Questions 
 
