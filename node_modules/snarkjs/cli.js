@@ -20,6 +20,7 @@
 /* eslint-disable no-console */
 
 import fs from "fs";
+import url from "url";
 
 import {readR1cs} from "r1csfile";
 
@@ -31,7 +32,7 @@ import clProcessor from "./src/clprocessor.js";
 import * as powersOfTau from "./src/powersoftau.js";
 
 import {  utils }   from "ffjavascript";
-const {stringifyBigInts, unstringifyBigInts} = utils;
+const {stringifyBigInts} = utils;
 
 import * as zkey from "./src/zkey.js";
 import * as groth16 from "./src/groth16.js";
@@ -39,12 +40,14 @@ import * as plonk from "./src/plonk.js";
 import * as wtns from "./src/wtns.js";
 import * as curves from "./src/curves.js";
 import path from "path";
+import bfj from "bfj";
 
 import Logger from "logplease";
+import * as binFileUtils from "@iden3/binfileutils";
 const logger = Logger.create("snarkJS", {showTimestamp:false});
 Logger.setLogLevel("INFO");
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 const commands = [
     {
@@ -295,6 +298,12 @@ const commands = [
         alias: ["pkv"],
         options: "-verbose|v",
         action: plonkVerify
+    },
+    {
+        cmd: "file info [binary.file]",
+        description: "Check info of a binary file",
+        alias: ["fi"],
+        action: fileInfo
     }
 ];
 
@@ -379,8 +388,7 @@ async function r1csExportJSON(params, options) {
 
     const r1csObj = await r1cs.exportJson(r1csName, logger);
 
-    const S = JSON.stringify(r1csObj, null, 1);
-    await fs.promises.writeFile(jsonName, S);
+    await bfj.write(jsonName, r1csObj, { space: 1 });
 
     return 0;
 }
@@ -393,7 +401,7 @@ async function wtnsCalculate(params, options) {
 
     if (options.verbose) Logger.setLogLevel("DEBUG");
 
-    const input = unstringifyBigInts(JSON.parse(await fs.promises.readFile(inputName, "utf8")));
+    const input = JSON.parse(await fs.promises.readFile(inputName, "utf8"));
 
     await wtns.calculate(input, wasmName, witnessName, {});
 
@@ -411,7 +419,7 @@ async function wtnsDebug(params, options) {
 
     if (options.verbose) Logger.setLogLevel("DEBUG");
 
-    const input = unstringifyBigInts(JSON.parse(await fs.promises.readFile(inputName, "utf8")));
+    const input = JSON.parse(await fs.promises.readFile(inputName, "utf8"));
 
     await wtns.debug(input, wasmName, witnessName, symName, options, logger);
 
@@ -429,7 +437,7 @@ async function wtnsExportJson(params, options) {
 
     const w = await wtns.exportJson(wtnsName);
 
-    await fs.promises.writeFile(jsonName, JSON.stringify(stringifyBigInts(w), null, 1));
+    await bfj.write(jsonName, stringifyBigInts(w), { space: 1 });
 
     return 0;
 }
@@ -451,9 +459,9 @@ async function zksnarkSetup(params, options) {
     const setup = zkSnark[protocol].setup(cir, options.verbose);
 
     await zkey.utils.write(zkeyName, setup.vk_proof);
-    // await fs.promises.writeFile(provingKeyName, JSON.stringify(stringifyBigInts(setup.vk_proof), null, 1), "utf-8");
+    await bfj.write(provingKeyName, stringifyBigInts(setup.vk_proof), { space: 1 });
 
-    await fs.promises.writeFile(verificationKeyName, JSON.stringify(stringifyBigInts(setup.vk_verifier), null, 1), "utf-8");
+    await bfj.write(verificationKeyName, stringifyBigInts(setup.vk_verifier), { space: 1 });
 
     return 0;
 }
@@ -471,8 +479,8 @@ async function groth16Prove(params, options) {
 
     const {proof, publicSignals} = await groth16.prove(zkeyName, witnessName, logger);
 
-    await fs.promises.writeFile(proofName, JSON.stringify(stringifyBigInts(proof), null, 1), "utf-8");
-    await fs.promises.writeFile(publicName, JSON.stringify(stringifyBigInts(publicSignals), null, 1), "utf-8");
+    await bfj.write(proofName, stringifyBigInts(proof), { space: 1 });
+    await bfj.write(publicName, stringifyBigInts(publicSignals), { space: 1 });
 
     return 0;
 }
@@ -488,12 +496,12 @@ async function groth16FullProve(params, options) {
 
     if (options.verbose) Logger.setLogLevel("DEBUG");
 
-    const input = unstringifyBigInts(JSON.parse(await fs.promises.readFile(inputName, "utf8")));
+    const input = JSON.parse(await fs.promises.readFile(inputName, "utf8"));
 
     const {proof, publicSignals} = await groth16.fullProve(input, wasmName, zkeyName,  logger);
 
-    await fs.promises.writeFile(proofName, JSON.stringify(stringifyBigInts(proof), null, 1), "utf-8");
-    await fs.promises.writeFile(publicName, JSON.stringify(stringifyBigInts(publicSignals), null, 1), "utf-8");
+    await bfj.write(proofName, stringifyBigInts(proof), { space: 1 });
+    await bfj.write(publicName, stringifyBigInts(publicSignals), { space: 1 });
 
     return 0;
 }
@@ -505,9 +513,9 @@ async function groth16Verify(params, options) {
     const publicName = params[1] || "public.json";
     const proofName = params[2] || "proof.json";
 
-    const verificationKey = unstringifyBigInts(JSON.parse(fs.readFileSync(verificationKeyName, "utf8")));
-    const pub = unstringifyBigInts(JSON.parse(fs.readFileSync(publicName, "utf8")));
-    const proof = unstringifyBigInts(JSON.parse(fs.readFileSync(proofName, "utf8")));
+    const verificationKey = JSON.parse(fs.readFileSync(verificationKeyName, "utf8"));
+    const pub = JSON.parse(fs.readFileSync(publicName, "utf8"));
+    const proof = JSON.parse(fs.readFileSync(proofName, "utf8"));
 
     if (options.verbose) Logger.setLogLevel("DEBUG");
 
@@ -529,8 +537,7 @@ async function zkeyExportVKey(params, options) {
 
     const vKey = await zkey.exportVerificationKey(zkeyName);
 
-    const S = JSON.stringify(utils.stringifyBigInts(vKey), null, 1);
-    await fs.promises.writeFile(verificationKeyName, S);
+    await bfj.write(verificationKeyName, stringifyBigInts(vKey), { space: 1 });
 }
 
 // zkey export json [circuit_final.zkey] [circuit.zkey.json]",
@@ -540,10 +547,9 @@ async function zkeyExportJson(params, options) {
 
     if (options.verbose) Logger.setLogLevel("DEBUG");
 
-    const zKey = await zkey.exportJson(zkeyName, logger);
+    const zKeyJson = await zkey.exportJson(zkeyName, logger);
 
-    const S = JSON.stringify(utils.stringifyBigInts(zKey), null, 1);
-    await fs.promises.writeFile(zkeyJsonName, S);
+    await bfj.write(zkeyJsonName, zKeyJson, { space: 1 });
 }
 
 async function fileExists(file) {
@@ -607,8 +613,8 @@ async function zkeyExportSolidityCalldata(params, options) {
 
     if (options.verbose) Logger.setLogLevel("DEBUG");
 
-    const pub = unstringifyBigInts(JSON.parse(fs.readFileSync(publicName, "utf8")));
-    const proof = unstringifyBigInts(JSON.parse(fs.readFileSync(proofName, "utf8")));
+    const pub = JSON.parse(fs.readFileSync(publicName, "utf8"));
+    const proof = JSON.parse(fs.readFileSync(proofName, "utf8"));
 
     let res;
     if (proof.protocol == "groth16") {
@@ -804,11 +810,9 @@ async function powersOfTauExportJson(params, options) {
 
     if (options.verbose) Logger.setLogLevel("DEBUG");
 
-    const pTau = await powersOfTau.exportJson(ptauName, logger);
+    const pTauJson = await powersOfTau.exportJson(ptauName, logger);
 
-    const S = JSON.stringify(stringifyBigInts(pTau), null, 1);
-    await fs.promises.writeFile(jsonName, S);
-
+    await bfj.write(jsonName, pTauJson, { space: 1 });
 }
 
 
@@ -873,7 +877,12 @@ async function zkeyImportBellman(params, options) {
 
     if (options.verbose) Logger.setLogLevel("DEBUG");
 
-    return zkey.importBellman(zkeyNameOld, mpcParamsName, zkeyNameNew, options.name, logger);
+    const isValid = await zkey.importBellman(zkeyNameOld, mpcParamsName, zkeyNameNew, options.name, logger);
+    if (isValid) {
+        return 0;
+    } else {
+        return 1;
+    }
 }
 
 // phase2 verify r1cs [circuit.r1cs] [powersoftau.ptau] [circuit_final.zkey]
@@ -1039,8 +1048,8 @@ async function plonkProve(params, options) {
 
     const {proof, publicSignals} = await plonk.prove(zkeyName, witnessName, logger);
 
-    await fs.promises.writeFile(proofName, JSON.stringify(stringifyBigInts(proof), null, 1), "utf-8");
-    await fs.promises.writeFile(publicName, JSON.stringify(stringifyBigInts(publicSignals), null, 1), "utf-8");
+    await bfj.write(proofName, stringifyBigInts(proof), { space: 1 });
+    await bfj.write(publicName, stringifyBigInts(publicSignals), { space: 1 });
 
     return 0;
 }
@@ -1057,12 +1066,12 @@ async function plonkFullProve(params, options) {
 
     if (options.verbose) Logger.setLogLevel("DEBUG");
 
-    const input = unstringifyBigInts(JSON.parse(await fs.promises.readFile(inputName, "utf8")));
+    const input = JSON.parse(await fs.promises.readFile(inputName, "utf8"));
 
     const {proof, publicSignals} = await plonk.fullProve(input, wasmName, zkeyName,  logger);
 
-    await fs.promises.writeFile(proofName, JSON.stringify(stringifyBigInts(proof), null, 1), "utf-8");
-    await fs.promises.writeFile(publicName, JSON.stringify(stringifyBigInts(publicSignals), null, 1), "utf-8");
+    await bfj.write(proofName, stringifyBigInts(proof), { space: 1 });
+    await bfj.write(publicName, stringifyBigInts(publicSignals), { space: 1 });
 
     return 0;
 }
@@ -1075,9 +1084,9 @@ async function plonkVerify(params, options) {
     const publicName = params[1] || "public.json";
     const proofName = params[2] || "proof.json";
 
-    const verificationKey = unstringifyBigInts(JSON.parse(fs.readFileSync(verificationKeyName, "utf8")));
-    const pub = unstringifyBigInts(JSON.parse(fs.readFileSync(publicName, "utf8")));
-    const proof = unstringifyBigInts(JSON.parse(fs.readFileSync(proofName, "utf8")));
+    const verificationKey = JSON.parse(fs.readFileSync(verificationKeyName, "utf8"));
+    const pub = JSON.parse(fs.readFileSync(publicName, "utf8"));
+    const proof = JSON.parse(fs.readFileSync(proofName, "utf8"));
 
     if (options.verbose) Logger.setLogLevel("DEBUG");
 
@@ -1087,5 +1096,55 @@ async function plonkVerify(params, options) {
         return 0;
     } else {
         return 1;
+    }
+}
+
+async function fileInfo(params) {
+    const filename = params[0];
+    const extension = filename.split(".").pop();
+
+    if (!["zkey", "r1cs", "ptau", "wtns"].includes(extension)) {
+        console.error(`Extension ${extension} is not allowed.`);
+        return;
+    }
+
+    try {
+        const {
+            fd: fd,
+            sections: sections
+        } = await binFileUtils.readBinFile(filename, extension, 2, 1 << 25, 1 << 23);
+
+        console.log(`File info for    ${filename}`);
+        console.log();
+        console.log(`File size:       ${fd.totalSize} bytes`);
+        console.log(`File type:       ${extension}`);
+        console.log(`Version:         ${fd.version}`);
+        console.log(`Bin version:     ${fd.binVersion}`);
+        console.log("");
+
+        sections.forEach((section, index) => {
+            let errors = [];
+            if (section.length > 1) errors.push(`Section ${index} has more than one section definition`);
+            else {
+                if (section[0].size === 0) {
+                    errors.push(`Section ${index} size is zero. This could cause false errors in other sections.`);
+                }
+            }
+            if(section[0].p + section[0].size > fd.totalSize) {
+                errors.push(`Section ${index} is out of bounds of the file.`);
+            }
+
+            const color = errors.length === 0 ? "%s%s%s" : "%s\x1b[31m%s\x1b[0m%s";
+            const text0 = "section " + ("#" + index).padStart(5, " ");
+            const text1 = errors.length === 0 ? "   " : " !!";
+            const text2 = ` size: ${section[0].size}\toffset: 0x${(section[0].p - 12).toString(16)}`;
+            console.log(color, text0, text1, text2);
+            errors.forEach((error) => {
+                console.error("\x1b[31m%s\x1b[0m", "                 > " + error);
+            });
+        });
+    } catch (error)
+    {
+        console.error(error.message);
     }
 }

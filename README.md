@@ -10,8 +10,9 @@ Inspired by :
 ## Setup 
 
 - Install package dependencies `npm i`
-- Clone submodule `git clone https://github.com/0xPARC/circom-ecdsa`
+- Clone submodule from root directory `git submodule update --init`
 - Install sub module dependencies `cd circom-ecdsa / npm i`
+
 
 ## Key concept of Designated Verifier ZKproof
 
