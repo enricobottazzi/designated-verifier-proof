@@ -21,8 +21,8 @@ The low-level cryptography is performed directly in `wasm`, and uses worker thre
 
 ## Preliminaries
 
-### Install node v14
-First off, make sure you have a recent version of `Node.js` installed. While any version after `v12` should work fine, we recommend you install `v14` or later.
+### Install node
+First off, make sure you have a recent version of `Node.js` installed. While any version after `v12` should work fine, we recommend you install `v16` or later.
 
 If you’re not sure which version of Node you have installed, you can run:
 
@@ -204,7 +204,7 @@ And it's blake2b hash is:
 
 You can find more information about the ceremony [here](https://github.com/weijiekoh/perpetualpowersoftau)
 
-The last ptau file was geneerated using this procedure:
+The last ptau file was generated using this procedure:
 
 https://www.reddit.com/r/ethereum/comments/iftos6/powers_of_tau_selection_for_hermez_rollup/
 
@@ -471,7 +471,7 @@ Finally, we export the verifier as a Solidity smart-contract so that we can publ
 snarkjs zkey export soliditycalldata public.json proof.json
 ```
 
-We use `soliditycalldata` to simulate a verification call, and cut and paste the result directly in the verifyProof field in the deployed smart contract in the remix envirotment.
+We use `soliditycalldata` to simulate a verification call, and cut and paste the result directly in the verifyProof field in the deployed smart contract in the remix environment.
 
 And voila! That's all there is to it :)
 

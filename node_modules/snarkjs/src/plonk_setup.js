@@ -19,7 +19,7 @@
 
 /* Implementation of this paper: https://eprint.iacr.org/2019/953.pdf */
 
-import {readR1csHeader} from "r1csfile";
+import {readR1csFd} from "r1csfile";
 import * as utils from "./powersoftau_utils.js";
 import {
     readBinFile,
@@ -37,12 +37,15 @@ import BigArray from "./bigarray.js";
 
 export default async function plonkSetup(r1csName, ptauName, zkeyName, logger) {
 
+    if (globalThis.gc) {globalThis.gc();}
+
     await Blake2b.ready();
 
     const {fd: fdPTau, sections: sectionsPTau} = await readBinFile(ptauName, "ptau", 1, 1<<22, 1<<24);
     const {curve, power} = await utils.readPTauHeader(fdPTau, sectionsPTau);
     const {fd: fdR1cs, sections: sectionsR1cs} = await readBinFile(r1csName, "r1cs", 1, 1<<22, 1<<24);
-    const r1cs = await readR1csHeader(fdR1cs, sectionsR1cs, false);
+
+    const r1cs = await readR1csFd(fdR1cs, sectionsR1cs, {loadConstraints: true, loadCustomGates: true});
 
     const sG1 = curve.G1.F.n8*2;
     const G1 = curve.G1;
@@ -59,7 +62,9 @@ export default async function plonkSetup(r1csName, ptauName, zkeyName, logger) {
 
     const nPublic = r1cs.nOutputs + r1cs.nPubInputs;
 
-    await processConstraints();
+    await processConstraints(curve.Fr, r1cs, logger);
+
+    if (globalThis.gc) {globalThis.gc();}
 
     const fdZKey = await createBinFile(zkeyName, "zkey", 1, 14, 1<<22, 1<<24);
 
@@ -95,16 +100,27 @@ export default async function plonkSetup(r1csName, ptauName, zkeyName, logger) {
 
 
     await writeAdditions(3, "Additions");
+    if (globalThis.gc) {globalThis.gc();}
     await writeWitnessMap(4, 0, "Amap");
+    if (globalThis.gc) {globalThis.gc();}
     await writeWitnessMap(5, 1, "Bmap");
+    if (globalThis.gc) {globalThis.gc();}
     await writeWitnessMap(6, 2, "Cmap");
+    if (globalThis.gc) {globalThis.gc();}
     await writeQMap(7, 3, "Qm");
+    if (globalThis.gc) {globalThis.gc();}
     await writeQMap(8, 4, "Ql");
+    if (globalThis.gc) {globalThis.gc();}
     await writeQMap(9, 5, "Qr");
+    if (globalThis.gc) {globalThis.gc();}
     await writeQMap(10, 6, "Qo");
+    if (globalThis.gc) {globalThis.gc();}
     await writeQMap(11, 7, "Qc");
+    if (globalThis.gc) {globalThis.gc();}
     await writeSigma(12, "sigma");
+    if (globalThis.gc) {globalThis.gc();}
     await writeLs(13, "lagrange polynomials");
+    if (globalThis.gc) {globalThis.gc();}
 
     // Write PTau points
     ////////////
@@ -114,6 +130,7 @@ export default async function plonkSetup(r1csName, ptauName, zkeyName, logger) {
     await fdPTau.readToBuffer(buffOut, 0, (domainSize+6)*sG1, sectionsPTau[2][0].p);
     await fdZKey.write(buffOut);
     await endWriteSection(fdZKey);
+    if (globalThis.gc) {globalThis.gc();}
 
 
     await writeHeaders();
@@ -126,105 +143,164 @@ export default async function plonkSetup(r1csName, ptauName, zkeyName, logger) {
 
     return ;
 
-    async function processConstraints() {
+    async function processConstraints(Fr, r1cs, logger) {
 
-        let r1csPos = 0;
-
-        function r1cs_readULE32() {
-            const buff = sR1cs.slice(r1csPos, r1csPos+4);
-            r1csPos += 4;
-            const buffV = new DataView(buff.buffer);
-            return buffV.getUint32(0, true);
+        function normalize(linearComb) {
+            const ss = Object.keys(linearComb);
+            for (let i = 0; i < ss.length; i++) {
+                if (linearComb[ss[i]] == 0n) delete linearComb[ss[i]];
+            }
         }
 
-        function r1cs_readCoef() {
-            const res = Fr.fromRprLE(sR1cs.slice(r1csPos, r1csPos+curve.Fr.n8));
-            r1csPos += curve.Fr.n8;
-            return res;
-        }
+        function join(linearComb1, k, linearComb2) {
+            const res = {};
 
-        function r1cs_readCoefs() {
-            const coefs = [];
-            const res = {
-                k: curve.Fr.zero
-            };
-            const nA = r1cs_readULE32();
-            for (let i=0; i<nA; i++) {
-                const s = r1cs_readULE32();
-                const coefp = r1cs_readCoef();
-
-                if (s==0) {
-                    res.k = coefp;
+            for (let s in linearComb1) {
+                if (typeof res[s] == "undefined") {
+                    res[s] = Fr.mul(k, linearComb1[s]);
                 } else {
-                    coefs.push([s, coefp]);
+                    res[s] = Fr.add(res[s], Fr.mul(k, linearComb1[s]));
                 }
             }
 
-            const resCoef = reduceCoef(coefs);
-            res.s = resCoef[0];
-            res.coef = resCoef[1];
+            for (let s in linearComb2) {
+                if (typeof res[s] == "undefined") {
+                    res[s] = linearComb2[s];
+                } else {
+                    res[s] = Fr.add(res[s], linearComb2[s]);
+                }
+            }
+            normalize(res);
             return res;
         }
 
-        function reduceCoef(coefs) {
-            if (coefs.length == 0) {
-                return [0, curve.Fr.zero];
+        function reduceCoefs(linearComb, maxC) {
+            const res = {
+                k: Fr.zero,
+                s: [],
+                coefs: []
+            };
+            const cs = [];
+
+            for (let s in linearComb) {
+                if (s == 0) {
+                    res.k = Fr.add(res.k, linearComb[s]);
+                } else if (linearComb[s] != 0n) {
+                    cs.push([Number(s), linearComb[s]])
+                }
             }
-            if (coefs.length == 1) {
-                return coefs[0];
+            while (cs.length > maxC) {
+                const c1 = cs.shift();
+                const c2 = cs.shift();
+
+                const sl = c1[0];
+                const sr = c2[0];
+                const so = plonkNVars++;
+                const qm = Fr.zero;
+                const ql = Fr.neg(c1[1]);
+                const qr = Fr.neg(c2[1]);
+                const qo = Fr.one;
+                const qc = Fr.zero;
+
+                plonkConstraints.push([sl, sr, so, qm, ql, qr, qo, qc]);
+
+                plonkAdditions.push([sl, sr, c1[1], c2[1]]);
+
+                cs.push([so, Fr.one]);
             }
-            const arr1 = coefs.slice(0, coefs.length >> 1);
-            const arr2 = coefs.slice(coefs.length >> 1);
-            const coef1 = reduceCoef(arr1);
-            const coef2 = reduceCoef(arr2);
-
-            const sl = coef1[0];
-            const sr = coef2[0];
-            const so = plonkNVars++;
-            const qm = curve.Fr.zero;
-            const ql = Fr.neg(coef1[1]);
-            const qr = Fr.neg(coef2[1]);
-            const qo = curve.Fr.one;
-            const qc = curve.Fr.zero;
-
-            plonkConstraints.push([sl, sr, so, qm, ql, qr, qo, qc]);
-
-            plonkAdditions.push([sl, sr, coef1[1], coef2[1]]);
-
-            return [so, curve.Fr.one];
+            for (let i = 0; i < cs.length; i++) {
+                res.s[i] = cs[i][0];
+                res.coefs[i] = cs[i][1];
+            }
+            while (res.coefs.length < maxC) {
+                res.s.push(0);
+                res.coefs.push(Fr.zero);
+            }
+            return res;
         }
 
-        for (let s = 1; s <= nPublic ; s++) {
+        function addConstraintSum(lc) {
+            const C = reduceCoefs(lc, 3);
+            const sl = C.s[0];
+            const sr = C.s[1];
+            const so = C.s[2];
+            const qm = Fr.zero;
+            const ql = C.coefs[0];
+            const qr = C.coefs[1];
+            const qo = C.coefs[2];
+            const qc = C.k;
+            plonkConstraints.push([sl, sr, so, qm, ql, qr, qo, qc]);
+        }
+
+        function addConstraintMul(lcA, lcB, lcC) {
+            const A = reduceCoefs(lcA, 1);
+            const B = reduceCoefs(lcB, 1);
+            const C = reduceCoefs(lcC, 1);
+
+
+            const sl = A.s[0];
+            const sr = B.s[0];
+            const so = C.s[0];
+            const qm = Fr.mul(A.coefs[0], B.coefs[0]);
+            const ql = Fr.mul(A.coefs[0], B.k);
+            const qr = Fr.mul(A.k, B.coefs[0]);
+            const qo = Fr.neg(C.coefs[0]);
+            const qc = Fr.sub(Fr.mul(A.k, B.k), C.k);
+            plonkConstraints.push([sl, sr, so, qm, ql, qr, qo, qc]);
+        }
+
+        function getLinearCombinationType(lc) {
+            let k = Fr.zero;
+            let n = 0;
+            const ss = Object.keys(lc);
+            for (let i = 0; i < ss.length; i++) {
+                if (lc[ss[i]] == 0n) {
+                    delete lc[ss[i]];
+                } else if (ss[i] == 0) {
+                    k = Fr.add(k, lc[ss[i]]);
+                } else {
+                    n++;
+                }
+            }
+            if (n > 0) return n.toString();
+            if (k != Fr.zero) return "k";
+            return "0";
+        }
+
+        function process(lcA, lcB, lcC) {
+            const lctA = getLinearCombinationType(lcA);
+            const lctB = getLinearCombinationType(lcB);
+            if ((lctA === "0") || (lctB === "0")) {
+                normalize(lcC);
+                addConstraintSum(lcC);
+            } else if (lctA === "k") {
+                const lcCC = join(lcB, lcA[0], lcC);
+                addConstraintSum(lcCC);
+            } else if (lctB === "k") {
+                const lcCC = join(lcA, lcB[0], lcC);
+                addConstraintSum(lcCC);
+            } else {
+                addConstraintMul(lcA, lcB, lcC);
+            }
+        }
+
+        for (let s = 1; s <= nPublic; s++) {
             const sl = s;
             const sr = 0;
             const so = 0;
-            const qm = curve.Fr.zero;
-            const ql = curve.Fr.one;
-            const qr = curve.Fr.zero;
-            const qo = curve.Fr.zero;
-            const qc = curve.Fr.zero;
+            const qm = Fr.zero;
+            const ql = Fr.one;
+            const qr = Fr.zero;
+            const qo = Fr.zero;
+            const qc = Fr.zero;
 
             plonkConstraints.push([sl, sr, so, qm, ql, qr, qo, qc]);
         }
 
-        for (let c=0; c<r1cs.nConstraints; c++) {
-            if ((logger)&&(c%10000 == 0)) logger.debug(`processing constraints: ${c}/${r1cs.nConstraints}`);
-            const A = r1cs_readCoefs();
-            const B = r1cs_readCoefs();
-            const C = r1cs_readCoefs();
-
-            const sl = A.s;
-            const sr = B.s;
-            const so = C.s;
-            const qm = curve.Fr.mul(A.coef, B.coef);
-            const ql = curve.Fr.mul(A.coef, B.k);
-            const qr = curve.Fr.mul(A.k, B.coef);
-            const qo = curve.Fr.neg(C.coef);
-            const qc = curve.Fr.sub(curve.Fr.mul(A.k, B.k) , C.k);
-
-            plonkConstraints.push([sl, sr, so, qm, ql, qr, qo, qc]);
+        for (let c = 0; c < r1cs.constraints.length; c++) {
+            if ((logger) && (c % 10000 === 0)) logger.debug(`processing constraints: ${c}/${r1cs.nConstraints}`);
+            process(...r1cs.constraints[c]);
         }
-
     }
 
     async function writeWitnessMap(sectionNum, posConstraint, name) {
@@ -299,17 +375,23 @@ export default async function plonkSetup(r1csName, ptauName, zkeyName, logger) {
             if (typeof firstPos[s] !== "undefined") {
                 sigma.set(lastAparence[s], firstPos[s]*n8r);
             } else {
-                throw new Error("Variable not used");
+                // throw new Error("Variable not used");
+                console.log("Variable not used");
             }
             if ((logger)&&(s%1000000 == 0)) logger.debug(`writing ${name} phase2: ${s}/${plonkNVars}`);
         }
+
+        if (globalThis.gc) {globalThis.gc();}
         await startWriteSection(fdZKey, sectionNum);
         let S1 = sigma.slice(0, domainSize*n8r);
         await writeP4(S1);
+        if (globalThis.gc) {globalThis.gc();}
         let S2 = sigma.slice(domainSize*n8r, domainSize*n8r*2);
         await writeP4(S2);
+        if (globalThis.gc) {globalThis.gc();}
         let S3 = sigma.slice(domainSize*n8r*2, domainSize*n8r*3);
         await writeP4(S3);
+        if (globalThis.gc) {globalThis.gc();}
         await endWriteSection(fdZKey);
 
         S1 = await Fr.batchFromMontgomery(S1);
@@ -317,8 +399,11 @@ export default async function plonkSetup(r1csName, ptauName, zkeyName, logger) {
         S3 = await Fr.batchFromMontgomery(S3);
 
         vk.S1= await curve.G1.multiExpAffine(LPoints, S1, logger, "multiexp S1");
+        if (globalThis.gc) {globalThis.gc();}
         vk.S2= await curve.G1.multiExpAffine(LPoints, S2, logger, "multiexp S2");
+        if (globalThis.gc) {globalThis.gc();}
         vk.S3= await curve.G1.multiExpAffine(LPoints, S3, logger, "multiexp S3");
+        if (globalThis.gc) {globalThis.gc();}
 
         function buildSigma(s, p) {
             if (typeof lastAparence[s] === "undefined") {
