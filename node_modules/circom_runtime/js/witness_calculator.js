@@ -110,7 +110,7 @@ export default async function builder(code, options) {
 
                 // In circom 2.0.7, they changed the log() function to allow strings and changed the
                 // output API. This smoothes over the breaking change.
-                if (patchVersion >= 7) {
+                if (majorVersion >= 2 && (minorVersion >= 1 || patchVersion >= 7)) {
                     // If we've buffered other content, put a space in between the items
                     if (msgStr !== "") {
                         msgStr += " "

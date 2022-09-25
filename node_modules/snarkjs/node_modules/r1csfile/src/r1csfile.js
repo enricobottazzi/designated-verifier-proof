@@ -268,7 +268,9 @@ export async function readCustomGatesUsesSection(fd,sections, options) {
         let numSignals = bR1cs32[bR1csPos++];
         c.signals = [];
         for (let j = 0; j < numSignals; j++) {
-            c.signals.push(bR1cs32[bR1csPos++]);
+            const LSB = bR1cs32[bR1csPos++];
+            const MSB = bR1cs32[bR1csPos++];
+            c.signals.push(MSB * 0x100000000 + LSB);
         }
         customGatesUses.push(c);
     }

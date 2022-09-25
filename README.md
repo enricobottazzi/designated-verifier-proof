@@ -12,7 +12,14 @@ Inspired by :
 - Install package dependencies `npm i`
 - Clone submodule from root directory `git submodule update --init`
 - Install sub module dependencies `cd circom-ecdsa / npm i`
+- Download ptau inside circuits folder `wget https://hermez.s3-eu-west-1.amazonaws.com/powersOfTau28_hez_final_21.ptau`
 
+## Test and Build 
+
+- To test `mocha`
+- To build `bash scripts/build_dvs.sh`. (used a AWS c5.4xlarge instance to build)
+
+Check this guide in order to understand how to interact with large circuits https://hackmd.io/V-7Aal05Tiy-ozmzTGBYPA?view#Setup-from-scratch 
 
 ## Key concept of Designated Verifier ZKproof
 
@@ -28,29 +35,11 @@ In this second scenario *only the Designated Verifier will be persuaded* by the 
 ## Circuit Design 
 
 Let's get a bit more technical.
-
-- [ ] Add Miro illustration of circuit design
-
-## Testing
-
-Test `bash scripts/build_witness.sh`
-
-To test `mocha test/dvs.js`. Likely you will run into some errors. That's because your computer is not able to handle the huge number of constraints and gates included in this circuit. 
-
-Test #1 => Prover wants to communicate something to the designated verifier 
-"I have a secret x". Sign the message and use it inside the zkSNARK. 
-
-Test #2 => Designated verifier wants to share with other people the message sent him by the Prover 
-Test #3 => Designated verifier wants to share with other people forging a false message sent him by the Prover 
+- [ ] Add Excalidraw illustration of circuit design
 
 ## Plug into your SNARK
 
 - [ ] Add instructions about how to modify your current circuit to accomodate the SVZkp
-
-## Done 
-
-Testing Signature with valid and false signature
-
 
 ## To do 
 
