@@ -56,3 +56,4 @@ WIP TO DO BOARDS => https://github.com/users/enricobottazzi/projects/6
 
 ## Run a server
 
+// npx --trace-gc --trace-gc-ignore-scavenger --max-old-space-size=2048000 --initial-old-space-size=2048000 --no-global-gc-scheduling --no-incremental-marking --max-semi-space-size=1024 --initial-heap-size=2048000 --expose-gc snarkjs groth16 setup designated-verifier-zkp/build/dvs/dvs.r1cs designated-verifier-zkp/circuits/pot21_final.ptau designated-verifier-zkp/build/dvs/dvs_0.zkey
