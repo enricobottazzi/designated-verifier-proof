@@ -78,6 +78,15 @@ export default class Group {
     }
 
     /**
+     * Updates a member in the group.
+     * @param index Index of the member to be updated.
+     * @param identityCommitment New member value.
+     */
+    updateMember(index: number, identityCommitment: Member) {
+        this._merkleTree.update(index, identityCommitment)
+    }
+
+    /**
      * Removes a member from the group.
      * @param index Index of the member to be removed.
      */

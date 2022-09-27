@@ -1,5 +1,4 @@
 const assert = require("assert");
-const bigInt = require("big-integer");
 
 module.exports = function buildTomCook(module, _prefix) {
 
@@ -9,7 +8,6 @@ module.exports = function buildTomCook(module, _prefix) {
     const CHUNK_BITS = 29;
     const CHUNK_BASE = 1 << CHUNK_BITS;
     const CHUNK_BASE_MAX = "9223372036317904896";
-    const CHUNK_MASK = CHUNK_BASE -1;
 
     function load(size, c, localVar, pos) {
         if (size == "l") {
@@ -154,30 +152,6 @@ module.exports = function buildTomCook(module, _prefix) {
                 c.i64_div_s( c.getLocal("c"), c.i64_const(CHUNK_BASE)),
             ),
         );
-    }
-
-    function buildNeg(n, sizes) {
-        const fnName = prefix+"_neg"+n+sizes;
-        if (definedFunctions[fnName]) return;
-        definedFunctions[fnName] = true;
-
-        const f = module.addFunction(fnName);
-        f.addParam("x", "i32");
-        f.addParam("r", "i32");
-
-
-        const c = f.getCodeBuilder();
-
-        for (let i=0; i<n; i++) {
-            f.addCode(
-                store(sizes[1], c, "r", i,
-                    c.i32_sub(
-                        c.i32_const(0),
-                        load(sizes[0], c, "x", i)
-                    )
-                )
-            );
-        }
     }
 
     function buildAdd(n, sizes) {
@@ -405,44 +379,6 @@ module.exports = function buildTomCook(module, _prefix) {
         }
     }
 
-    function buildFix(n, sizes) {
-        const fnName = prefix+"_fix"+n+sizes;
-        if (definedFunctions[fnName]) return;
-        definedFunctions[fnName] = true;
-
-
-        const f = module.addFunction(fnName);
-        f.addParam("x", "i32");
-        f.addParam("r", "i32");
-
-        f.addLocal("c", "i64");
-        f.addLocal("aux", "i64");
-
-        const c = f.getCodeBuilder();
-
-        f.addCode(
-            c.setLocal(
-                "c",
-                load(sizes[0], c, "x", 0)
-            ),
-            storeAdjusting(sizes[1], c, "c", "r", "aux", 0)
-        );
-
-        for (let i=1; i<n; i++) {
-            f.addCode(
-                c.setLocal(
-                    "c",
-                    c.i64_add(
-                        c.i64_div_s(c.getLocal("c"), c.i64_const(CHUNK_BASE)),
-                        load(sizes[0], c, "x", i)
-                    )
-                ),
-                storeAdjusting(sizes[1], c, "c", "r", "aux", i)
-            );
-        }
-
-    }
-
     function buildMul(n, sizes) {
 
         if (n==3) {
@@ -587,11 +523,6 @@ module.exports = function buildTomCook(module, _prefix) {
 
 
     buildMul(9, "sss");
-/*    module.exportFunction(prefix+"_divshort6");
-    module.exportFunction(prefix+"_mulshort6");
-    module.exportFunction(prefix+"_mul3");
-    module.exportFunction(prefix+"_mulu9");
-*/
     module.exportFunction(prefix+"_mul9sss", prefix+"_mul9");
 
     buildDivShort(6, "ss");

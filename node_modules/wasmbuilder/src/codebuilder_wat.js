@@ -17,9 +17,9 @@
     along with wasmbuilder. If not, see <https://www.gnu.org/licenses/>.
 */
 
-const utils = require("./utils.js");
+import * as utils from "./utils.js";
 
-class CodeBuilderWat {
+export class CodeBuilderWat {
     constructor(func) {
         this.func = func;
         this.functionName = func.functionName;
@@ -247,5 +247,3 @@ class CodeBuilderWat {
     comment(c) { return ";; " + c; }
 
 }
-
-module.exports = CodeBuilderWat;

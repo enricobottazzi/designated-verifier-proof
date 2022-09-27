@@ -17,14 +17,13 @@
     along with wasmsnark. If not, see <https://www.gnu.org/licenses/>.
 */
 
-const bigInt = require("big-integer");
-
 const buildF1m =require("./build_f1m.js");
+const { bitLength } = require("./bigint.js");
 
 module.exports = function buildF1(module, _q, _prefix, _f1mPrefix, _intPrefix) {
 
-    const q = bigInt(_q);
-    const n64 = Math.floor((q.minus(1).bitLength() - 1)/64) +1;
+    const q = BigInt(_q);
+    const n64 = Math.floor((bitLength(q - 1n) - 1)/64) +1;
     const n8 = n64*8;
 
     const prefix = _prefix || "f1";

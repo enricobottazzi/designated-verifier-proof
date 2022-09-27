@@ -17,8 +17,6 @@
     along with wasmsnark. If not, see <https://www.gnu.org/licenses/>.
 */
 
-const utils = require("./utils.js");
-
 module.exports = function buildInt(module, n64, _prefix) {
 
     const prefix = _prefix || "int";
@@ -27,8 +25,6 @@ module.exports = function buildInt(module, n64, _prefix) {
 
     const n32 = n64*2;
     const n8 = n64*8;
-
-    const one = module.alloc(n8, utils.bigInt2BytesLE(1, n8));
 
     function buildCopy() {
         const f = module.addFunction(prefix+"_copy");

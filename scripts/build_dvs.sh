@@ -1,5 +1,5 @@
 #!/bin/bash
-PHASE1=./circuits/pot21_final.ptau
+PHASE1=./circuits/powersOfTau28_hez_final_21.ptau
 BUILD_DIR=./build/dvs
 CIRCUIT_PATH=./circuits/dvs.circom
 CIRCUIT_NAME=dvs
@@ -36,7 +36,7 @@ echo "DONE ($((end-start))s)"
 
 echo "****GENERATING ZKEY 0****"
 start=`date +%s`
-snarkjs groth16 setup "$BUILD_DIR"/"$CIRCUIT_NAME".r1cs "$PHASE1" "$BUILD_DIR"/"$CIRCUIT_NAME"_0.zkey
+snarkjs groth16 setup "$BUILD_DIR"/"$CIRCUIT_NAME".r1cs "$PHASE1" "$BUILD_DIR"/"$CIRCUIT_NAME"_0.zkey -v
 end=`date +%s`
 echo "DONE ($((end-start))s)"
 

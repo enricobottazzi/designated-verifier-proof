@@ -17,7 +17,7 @@
     along with wasmsnark. If not, see <https://www.gnu.org/licenses/>.
 */
 
-const bigInt = require("big-integer");
+const { isOdd, modInv, modPow } = require("./bigint.js");
 const utils = require("./utils.js");
 
 module.exports = function buildFFT(module, prefix, gPrefix, fPrefix, opGtimesF) {
@@ -30,61 +30,61 @@ module.exports = function buildFFT(module, prefix, gPrefix, fPrefix, opGtimesF) 
 
     const q = module.modules[fPrefix].q;
 
-    let rem = q.minus(bigInt(1));
+    let rem = q - 1n;
     let maxBits = 0;
-    while (!rem.isOdd()) {
+    while (!isOdd(rem)) {
         maxBits ++;
-        rem = rem.shiftRight(1);
+        rem = rem >> 1n;
     }
 
-    let nr = bigInt(2);
+    let nr = 2n;
 
-    while ( nr.modPow(q.shiftRight(1), q).equals(1) ) nr = nr.add(1);
+    while ( modPow(nr, q >> 1n, q) === 1n ) nr = nr + 1n;
 
     // console.log(nr);
 
     const w = new Array(maxBits+1);
-    w[maxBits] = nr.modPow(rem, q);
+    w[maxBits] = modPow(nr, rem, q);
 
     let n=maxBits-1;
     while (n>=0) {
-        w[n] = w[n+1].modPow(2, q);
+        w[n] = modPow(w[n+1], 2n, q);
         n--;
     }
 
     const bytes = [];
-    const R = bigInt(1).shiftLeft(n8f*8).mod(q);
+    const R = (1n << BigInt(n8f*8)) % q;
 
     for (let i=0; i<w.length; i++) {
-        const m = w[i].times(R).mod(q);
+        const m = w[i] * R % q;
         bytes.push(...utils.bigInt2BytesLE(m, n8f));
     }
 
     const ROOTs = module.alloc(bytes);
 
     const i2 = new Array(maxBits+1);
-    i2[0] = bigInt(1);
+    i2[0] = 1n;
 
     for (let i=1; i<=maxBits; i++) {
-        i2[i] = i2[i-1].times(2);
+        i2[i] = i2[i-1] * 2n;
     }
 
     const bytesi2 =[];
     for (let i=0; i<=maxBits; i++) {
-        const m = i2[i].modInv(q).times(R).mod(q);
+        const m = modInv(i2[i], q) * R % q;
         bytesi2.push(...utils.bigInt2BytesLE(m, n8f));
     }
 
     const INV2 = module.alloc(bytesi2);
 
-    const shift = nr.modPow(2, q);
+    const shift = modPow(nr, 2n, q);
     const bytesShiftToSmallM =[];
     const bytesSConst =[];
     for (let i=0; i<=maxBits; i++) {
-        const shiftToSmallM = shift.modPow(bigInt(2).pow(i), q);
-        const sConst = q.add(bigInt.one).minus(shiftToSmallM).modInv(q);
-        bytesShiftToSmallM.push(...utils.bigInt2BytesLE(shiftToSmallM.times(R).mod(q), n8f));
-        bytesSConst.push(...utils.bigInt2BytesLE(sConst.times(R).mod(q), n8f));
+        const shiftToSmallM = modPow(shift, 2n ** BigInt(i), q);
+        const sConst = modInv(q + 1n - shiftToSmallM, q);
+        bytesShiftToSmallM.push(...utils.bigInt2BytesLE(shiftToSmallM * R % q, n8f));
+        bytesSConst.push(...utils.bigInt2BytesLE(sConst * R % q, n8f));
     }
 
     const SHIFT_TO_M = module.alloc( bytesShiftToSmallM  );

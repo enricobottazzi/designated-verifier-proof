@@ -4,9 +4,6 @@ const buildBn128 = require("../src/bn128/build_bn128.js");
 const buildProtoboard = require("wasmbuilder").buildProtoboard;
 const { performance } = require("perf_hooks");
 
-
-
-
 async function run() {
     const n8 = 32;
     const pb = await buildProtoboard((module) => {
@@ -37,8 +34,7 @@ async function run() {
 
     const t1 = performance.now();
 
-//    for (let k=0; k<3; k++)
-        pb.g1m_multiexpAffine(pBases, pScalars, n8, N, pRes);
+    pb.g1m_multiexpAffine(pBases, pScalars, n8, N, pRes);
 
     const t2 = performance.now();
 

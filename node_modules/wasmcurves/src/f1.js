@@ -17,17 +17,16 @@
     along with wasmsnark. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* globals WebAssembly */
-const bigInt = require("big-integer");
 const ModuleBuilder = require("wasmbuilder").ModuleBuilder;
 const buildF1 = require("./build_f1.js");
 const buildTestF1 = require("./build_testf1.js");
+const { bitLength } = require("./bigint.js");
 
 async function build(q) {
     const f1 = new F1(q);
 
-    f1.q = bigInt(q);
-    f1.n64 = Math.floor((f1.q.minus(1).bitLength() - 1)/64) +1;
+    f1.q = BigInt(q);
+    f1.n64 = Math.floor((bitLength(f1.q - 1n) - 1)/64) +1;
     f1.n32 = f1.n64*2;
     f1.n8 = f1.n64*8;
 
@@ -66,13 +65,13 @@ class F1 {
     }
 
     putInt(pos, _a) {
-        const a = bigInt(_a);
+        const a = BigInt(_a);
         if (pos & 0x7) throw new Error("Pointer must be aligned");
-        if (a.bitLength > this.n64*64) {
-            return this.putInt(a.mod(this.q));
+        if (bitLength(a) > this.n64*64) {
+            return this.putInt(a % this.q);
         }
         for (let i=0; i<this.n32; i++) {
-            this.i32[(pos>>2)+i] = a.shiftRight(i*32).and(0xFFFFFFFF).toJSNumber();
+            this.i32[(pos>>2)+i] = Number(a >> BigInt(i*32) & 0xFFFFFFFFn);
         }
     }
 
@@ -83,22 +82,22 @@ class F1 {
     }
 
     putInt2(pos, _a) {
-        const a = bigInt(_a);
+        const a = BigInt(_a);
         if (pos & 0x7) throw new Error("Pointer must be aligned");
-        if (a.bitLength > this.n64*64*2) {
-            return this.putInt(a.mod(this.q));
+        if (bitLength(a) > this.n64*64*2) {
+            return this.putInt(a % this.q);
         }
         for (let i=0; i<this.n32*2; i++) {
-            this.i32[(pos>>2)+i] = a.shiftRight(i*32).and(0xFFFFFFFF).toJSNumber();
+            this.i32[(pos>>2)+i] = Number(a >> BigInt(i*32) & 0xFFFFFFFFn);
         }
     }
 
     getInt(pos) {
         if (pos & 0x7) throw new Error("Pointer must be aligned");
-        let acc = bigInt(this.i32[(pos>>2)+this.n32-1]);
+        let acc = BigInt(this.i32[(pos>>2)+this.n32-1]);
         for (let i=this.n32-2; i>=0; i--) {
-            acc = acc.shiftLeft(32);
-            acc = acc.add(this.i32[(pos>>2)+i]);
+            acc = acc << 32n;
+            acc = acc + BigInt(this.i32[(pos>>2)+i]);
         }
         return acc;
     }
@@ -106,10 +105,10 @@ class F1 {
     getInt2(pos) {
         if (pos & 0x7) throw new Error("Pointer must be aligned");
         const last = this.n32*2-1;
-        let acc = bigInt(this.i32[(pos>>2)+last]);
+        let acc = BigInt(this.i32[(pos>>2)+last]);
         for (let i=last; i>=0; i--) {
-            acc = acc.shiftLeft(32);
-            acc = acc.add(this.i32[(pos>>2)+i]);
+            acc = acc << 32n;
+            acc = acc + BigInt(this.i32[(pos>>2)+i]);
         }
         return acc;
     }

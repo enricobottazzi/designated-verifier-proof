@@ -18,10 +18,10 @@
 */
 
 
-const FunctionBuilder = require("./functionbuilder.js");
-const utils = require("./utils.js");
+import { FunctionBuilder } from "./functionbuilder.js";
+import * as utils from "./utils.js";
 
-class ModuleBuilder {
+export class ModuleBuilder {
 
     constructor() {
         this.functions = [];
@@ -304,5 +304,3 @@ class ModuleBuilder {
     }
 
 }
-
-module.exports = ModuleBuilder;

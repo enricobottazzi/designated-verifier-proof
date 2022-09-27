@@ -50,9 +50,7 @@ describe("Designated Verifier Testing", function async() {
                                                           "s": s_array,
                                                           "msghash": msghash_array,
                                                           "pubkey": [pub0_array, pub1_array],
-                                                        });
-
-            
+                                                        }, true);
             
             // Evaluate witness to output 1 (namely true) 
             await circuit.assertOut(witness, {result: "1"})

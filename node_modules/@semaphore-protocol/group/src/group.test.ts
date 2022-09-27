@@ -58,6 +58,18 @@ describe("Group", () => {
         })
     })
 
+    describe("# updateMember", () => {
+        it("Should update a member in a group", () => {
+            const group = new Group()
+            group.addMembers([BigInt(1), BigInt(3)])
+
+            group.updateMember(0, BigInt(1))
+
+            expect(group.members).toHaveLength(2)
+            expect(group.members[0]).toBe(BigInt(1))
+        })
+    })
+
     describe("# removeMember", () => {
         it("Should remove a member from a group", () => {
             const group = new Group()

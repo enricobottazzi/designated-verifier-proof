@@ -2,13 +2,14 @@ module.exports = {
     "env": {
         "es6": true,
         "node": true,
-        "mocha": true
+        "mocha": true,
+        "es2020": true
     },
     "globals": {
         "WebAssembly": true
     },
     "parserOptions": {
-        "ecmaVersion": 2017
+        "ecmaVersion": 2020
     },
     "extends": "eslint:recommended",
     "rules": {

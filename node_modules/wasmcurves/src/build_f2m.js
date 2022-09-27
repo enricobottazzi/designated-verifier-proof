@@ -18,7 +18,6 @@
 */
 const buildExp = require("./build_timesscalar");
 const buildBatchInverse = require("./build_batchinverse");
-const bigInt = require("big-integer");
 const utils = require("./utils.js");
 
 module.exports = function buildF2m(module, mulNonResidueFn, prefix, f1mPrefix) {
@@ -459,8 +458,10 @@ module.exports = function buildF2m(module, mulNonResidueFn, prefix, f1mPrefix) {
 
         const c = f.getCodeBuilder();
 
-        const e34 = c.i32_const(module.alloc(utils.bigInt2BytesLE(bigInt(q).minus(bigInt(3)).divide(4), f1n8 )));
-        const e12 = c.i32_const(module.alloc(utils.bigInt2BytesLE(bigInt(q).minus(bigInt(1)).divide(2), f1n8 )));
+        // BigInt can't take `undefined` so we use `|| 0`
+        const e34 = c.i32_const(module.alloc(utils.bigInt2BytesLE((BigInt(q || 0) - 3n) / 4n, f1n8 )));
+        // BigInt can't take `undefined` so we use `|| 0`
+        const e12 = c.i32_const(module.alloc(utils.bigInt2BytesLE((BigInt(q || 0) - 1n) / 2n, f1n8 )));
 
         const a = c.getLocal("a");
         const a1 = c.i32_const(module.alloc(f1n8*2));
@@ -527,7 +528,8 @@ module.exports = function buildF2m(module, mulNonResidueFn, prefix, f1mPrefix) {
 
         const c = f.getCodeBuilder();
 
-        const e34 = c.i32_const(module.alloc(utils.bigInt2BytesLE(bigInt(q).minus(bigInt(3)).divide(4), f1n8 )));
+        // BigInt can't take `undefined` so we use `|| 0`
+        const e34 = c.i32_const(module.alloc(utils.bigInt2BytesLE((BigInt(q || 0) - 3n) / 4n, f1n8 )));
 
         const a = c.getLocal("a");
         const a1 = c.i32_const(module.alloc(f1n8*2));

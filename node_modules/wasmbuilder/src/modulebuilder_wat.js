@@ -18,10 +18,10 @@
 */
 
 
-const FunctionBuilderWat = require("./functionbuilder_wat.js");
-const utils = require("./utils.js");
+import { FunctionBuilderWat } from "./functionbuilder_wat.js";
+import * as utils from "./utils.js";
 
-class ModuleBuilderWat {
+export class ModuleBuilderWat {
 
     constructor() {
         this.functions = [];
@@ -247,5 +247,3 @@ class ModuleBuilderWat {
     }
 
 }
-
-module.exports = ModuleBuilderWat;

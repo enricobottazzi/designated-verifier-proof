@@ -41,17 +41,17 @@ buildProtoboard((module) => {
 
         const p2 = p1+96*3;
         pb.g1m_double(p1, p2);
-        pb.g1m_affine(p2, p2);
+        pb.g1m_normalize(p2, p2);
         res.push(...pb.i8.slice(p2, p2+96*2));
 
         const p3 = p2+96*3;
         pb.g1m_add(p1, p2, p3);
-        pb.g1m_affine(p3, p3);
+        pb.g1m_normalize(p3, p3);
         res.push(...pb.i8.slice(p3, p3+96*2));
 
         const p4 = p3+96*3;
         pb.g1m_double(p2, p4);
-        pb.g1m_affine(p4, p4);
+        pb.g1m_normalize(p4, p4);
         res.push(...pb.i8.slice(p4, p4+96*2));
     }
 

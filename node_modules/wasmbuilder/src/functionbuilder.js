@@ -17,8 +17,8 @@
     along with wasmbuilder. If not, see <https://www.gnu.org/licenses/>.
 */
 
-const CodeBuilder = require("./codebuilder.js");
-const utils = require("./utils.js");
+import { CodeBuilder } from "./codebuilder.js";
+import * as utils from "./utils.js";
 
 const typeCodes = {
     "i32": 0x7f,
@@ -31,7 +31,7 @@ const typeCodes = {
 };
 
 
-class FunctionBuilder {
+export class FunctionBuilder {
 
     constructor (module, fnName, fnType, moduleName, fieldName) {
         if (fnType == "import") {
@@ -113,5 +113,3 @@ class FunctionBuilder {
         return new CodeBuilder(this);
     }
 }
-
-module.exports = FunctionBuilder;

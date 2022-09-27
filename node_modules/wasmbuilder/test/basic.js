@@ -1,6 +1,6 @@
-const assert = require("assert");
+import assert from "assert";
 
-const ModuleBuilder = require("../index.js").ModuleBuilder;
+import { ModuleBuilder } from "../main.js";
 
 function buf2hex(buffer) { // buffer is an ArrayBuffer
     return Array.prototype.map.call(new Uint8Array(buffer), x => ("00" + x.toString(16)).slice(-2)).join("");

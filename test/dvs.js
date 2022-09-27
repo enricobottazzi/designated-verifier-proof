@@ -1,10 +1,13 @@
-// Testing for ECDSAVerifyNoPubkeyCheck borrowed from https://github.com/0xPARC/circom-ecdsa/blob/master/test/ecdsa.test.ts
-// Testing for ECDSAPrivToAddress borrowed from https://github.com/0xPARC/cabal
 const path = require("path");
 const wasm_tester = require("circom_tester").wasm;
 const ethers = require('ethers');
 const {sign, Point} = require('@noble/secp256k1')
 const {bigintToTuple, bigint_to_array, bigint_to_Uint8Array, Uint8Array_to_bigint } = require ("../utils/convertors.js");
+
+const F1Field = require("ffjavascript").F1Field;
+const Scalar = require("ffjavascript").Scalar;
+exports.p = Scalar.fromString("21888242871839275222246405745257275088548364400416034343698204186575808495617");
+const Fr = new F1Field(exports.p);
 
 describe("Designated Verifier Testing", function async() {
 
@@ -29,7 +32,7 @@ describe("Designated Verifier Testing", function async() {
 
         it("should verify a valid proof (based on 1st condition) coming from the prover", async () => {
 
-            // let circuit = await wasm_tester(path.join(__dirname, "../circuits", "dvs.circom"));
+            let circuit = await wasm_tester(path.join(__dirname, "../circuits", "dvs.circom"));
             
             // message to be Signed
             let message = "Hello World!!!!";
@@ -53,31 +56,20 @@ describe("Designated Verifier Testing", function async() {
             // Prover generates a random privkey to use as input as he/she doesn't know verifier's private key
             const wallet3 = ethers.Wallet.createRandom()
             let randPrivKey = wallet3.privateKey   
-
-            let input = {"r": r_array,
-            "s": s_array,
-            "msghash": msghash_array,
-            "pubkey": [pub0_array, pub1_array],
-            "privkey": bigintToTuple(BigInt(randPrivKey)),
-            "addr": BigInt(verifierAddress)    
-            }
-
-            // input to json
-            let jsonInput = JSON.stringify(input);
-           //  console.log("Input: ", jsonInput);
             
-            // // Generate Witness that satisfies 1st condition (msg signature) and doesn't satisfy 2nd condition (priv key to address)
-            // let witness = await circuit.calculateWitness({"r": r_array,
-            //                                               "s": s_array,
-            //                                               "msghash": msghash_array,
-            //                                               "pubkey": [pub0_array, pub1_array],
-            //                                               "privkey": ,
-            //                                               "addr": verifierAddress,
-            //                                             });
+            // Generate Witness that satisfies 1st condition (msg signature) and doesn't satisfy 2nd condition (priv key to address)
+            let witness = await circuit.calculateWitness({
+                r: r_array,
+                s: s_array,
+                msghash: msghash_array,
+                pubkey: [pub0_array, pub1_array],
+                privkey: bigintToTuple(BigInt(randPrivKey)),
+                addr: BigInt(verifierAddress)    
+                }, true);
             
-            // // Evaluate witness to output 1 (namely true) 
-            // await circuit.assertOut(witness, {out: "1"})
-            // await circuit.checkConstraints(witness);
+            // Evaluate witness to output 1 (namely true) 
+            await circuit.assertOut(witness, {out: "1"})
+            await circuit.checkConstraints(witness);
         });
 
         it("should verify a valid proof (based on 2nd condition) coming from a dishonest verifier", async () => {

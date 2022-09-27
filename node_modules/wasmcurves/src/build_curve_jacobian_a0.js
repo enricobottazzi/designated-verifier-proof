@@ -1323,32 +1323,6 @@ module.exports = function buildCurve(module, prefix, prefixField, pB) {
         );
     }
 
-
-    function buildInCurveAffine() {
-        const f = module.addFunction(prefix + "_inCurveAffine");
-        f.addParam("pIn", "i32");
-        f.setReturnType("i32");
-
-        const c = f.getCodeBuilder();
-
-        const x = c.getLocal("pIn");
-        const y = c.i32_add(c.getLocal("pIn"), n8);
-
-        const y2 = module.alloc(n8*2);
-        const x3b = module.alloc(n8*2);
-
-        f.addCode(
-            c.call(prefixField + "_square", y, y2),
-            c.call(prefixField + "_square", x, x3b),
-            c.call(prefixField + "_mul", x, x3b, x3b),
-            c.call(prefixField + "_add", x3b, c.i32_const(pB), x3b),
-
-            c.ret(
-                c.call(prefixField + "_eq", y2, x3b)
-            )
-        );
-    }
-
     function buildInCurveAffine() {
         const f = module.addFunction(prefix + "_inCurveAffine");
         f.addParam("pIn", "i32");
