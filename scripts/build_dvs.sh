@@ -55,7 +55,7 @@ echo "DONE ($((end-start))s)"
 
 echo "****VERIFYING FINAL ZKEY****"
 start=`date +%s`
-snarkjs zkey verify "$BUILD_DIR"/"$CIRCUIT_NAME".r1cs "$PHASE1" "$BUILD_DIR"/"$CIRCUIT_NAME".zkey
+snarkjs zkey verify "$BUILD_DIR"/"$CIRCUIT_NAME".r1cs "$PHASE1" "$BUILD_DIR"/"$CIRCUIT_NAME".zkey -v
 end=`date +%s`
 echo "DONE ($((end-start))s)"
 

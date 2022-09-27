@@ -66,7 +66,9 @@ To interact with such large circuits, it is needed to operate with very large ma
 
 - [Set up your instance](https://hackmd.io/V-7Aal05Tiy-ozmzTGBYPA?view#Setup-from-scratch)
 - [Remove system memory limit](https://hackmd.io/V-7Aal05Tiy-ozmzTGBYPA?view#Remove-system-memory-limit)
-- `export NODE_OPTIONS=--max-old-space-size=120480000` to specifies the amount of virtual memory allocated to Node.js in order to avoid Javascript running out of memory 
+- [Install Snarkjs](https://docs.circom.io/getting-started/installation/#installing-snarkjs)
+- Clone the repo and follow the setup previously described
+- `export NODE_OPTIONS=--max-old-space-size=120480000` to specifies the amount of virtual memory allocated to Node.js in order to avoid Javascript running out of memory
 
 I used a AWS c3.8xlarge instance to build this. This instance has 32vCPU, 60GB of RAM and 30 GB of SSD Memory. The instance will use Ubuntu 20.04. It costs $1.6/hour to run.
 
@@ -74,19 +76,28 @@ The circuit specified in this repo has 1756287 constraints.
 
 ## Benchmarks
 
-Specify that this is only needed for zkey setup 
+All benchmarks were run on the AWS c3.8xlarge machine previously described.
+
+|   |dvs|
+|---|---|
+|Constraints                          |1756287 |
+|Circuit compilation                  |153s    |
+|Witness generation                   |232s     |
+|Trusted setup phase 2 key generation |722s     |
+|Trusted setup phase 2 contribution   |104s      |
+|Proving key size                     |1.2G     |
+|Proving key verification             |787s     |
+|Proving time                         |66s      |
+|Proof verification time              |1s      |
+
+The most intense step is the proving key generation. Luckily, this process need to be executed only once and can be reused for every application that wants to use this circuit architecture. 
+
+Even compiling the proving key for a circuit this big requires 40GB RAM and a 100GB+ SWAP! Luckily, this proving key only needs to be calculated once and will work for every zk airdrop with our construction in the future.
+
+Users will only need to generate/verify proofs. These steps are much less light and can be executed locally inside any browser.
 
 ## To do 
 
-WIP TO DO BOARDS => https://github.com/users/enricobottazzi/projects/6
-
-- [ ] Add address as input somehow
-- [ ] Test is not working, check again 
-- [ ] Modify circuit to accomodate pubkey check
-
-
-Machine used + setup
-setup remove limit
-export NODE_OPTIONS=--max-old-space-size=120480000
-bash scripts/build_dvs.sh
-
+- [ ] Circom_tester doesn't compile therefore tests are not working
+- [ ] Add zkey, .wasm and .vkey to an amazon bucket
+- [ ] Test it inside a fronte-end 
