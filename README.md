@@ -1,6 +1,6 @@
 # Designated Verifier Signature
 
-Core Team: Enrico Bottazzi (Developer) and Shrey Jain (Researcher)
+Core Team: Enrico Bottazzi (Developer) and Shrey Jain (Researcher and PM)
 
 
 Designated Verifier Signature is a type of signature that can only be verified by a specific subject. The tipical property of digital signatures (Authentication, Integrity and non-repudiation) are still valid but **only in front of a designated verifier**.
