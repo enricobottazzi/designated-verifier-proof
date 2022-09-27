@@ -92,8 +92,6 @@ All benchmarks were run on the AWS c3.8xlarge machine previously described.
 
 The most intense step is the proving key generation. Luckily, this process need to be executed only once and can be reused for every application that wants to use this circuit architecture. 
 
-Even compiling the proving key for a circuit this big requires 40GB RAM and a 100GB+ SWAP! Luckily, this proving key only needs to be calculated once and will work for every zk airdrop with our construction in the future.
-
 The artifacts generated during the Trusted Setup are publicly awailable:
 
 - proving key **zkey** `wget https://dvs-eb-bucket.s3.eu-west-2.amazonaws.com/dvs.zkey` 
