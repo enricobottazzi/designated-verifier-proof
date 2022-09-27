@@ -1,5 +1,6 @@
 # Designated Verifier Signature
 
+Core Team: Enrico Bottazzi (Developer) and Shrey Jain (Researcher)
 Designated Verifier Signature is a type of signature that can only be verified by a specific subject. The tipical property of digital signatures (Authentication, Integrity and non-repudiation) are still valid but **only in front of a designated verifier**.
 
 DVS uses Zero Knowledge Proof to achieve that:
