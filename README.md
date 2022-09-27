@@ -94,10 +94,15 @@ The most intense step is the proving key generation. Luckily, this process need 
 
 Even compiling the proving key for a circuit this big requires 40GB RAM and a 100GB+ SWAP! Luckily, this proving key only needs to be calculated once and will work for every zk airdrop with our construction in the future.
 
+The artifacts generated during the Trusted Setup are publicly awailable:
+
+- proving key **zkey** `wget https://dvs-eb-bucket.s3.eu-west-2.amazonaws.com/dvs.zkey` 
+- circuit **wasm** `wget  https://dvs-eb-bucket.s3.eu-west-2.amazonaws.com/dvs.wasm`
+- verification key **vkey** `wget https://dvs-eb-bucket.s3.eu-west-2.amazonaws.com/vkey.json`
+
 Users will only need to generate/verify proofs. These steps are much less light and can be executed locally inside any browser.
 
 ## To do 
 
 - [ ] Circom_tester doesn't compile therefore tests are not working
-- [ ] Add zkey, .wasm and .vkey to an amazon bucket
 - [ ] Test it inside a fronte-end 
