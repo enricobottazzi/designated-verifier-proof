@@ -2,6 +2,9 @@
 
 Core Team: Enrico Bottazzi (Developer) and Shrey Jain (Researcher and PM)
 
+Enrico Bottazzi is a ZK Developer at Polygon ID and Shrey Jain is a Web3 Researcher at Microsoft.
+
+_________________________________________________________________________________________________
 
 Designated Verifier Signature is a type of signature that can only be verified by a specific subject. The tipical property of digital signatures (Authentication, Integrity and non-repudiation) are still valid but **only in front of a designated verifier**.
 
