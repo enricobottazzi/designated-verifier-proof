@@ -1,5 +1,7 @@
 # Designated Verifier Signatures
 
+We have individual minimal disclosure. Designated Verifier Proofs (DVPs) enable collective minimal disclosure. In doing so, we can maintain the integrity of information within a set of selected agents. 
+
 Core Team: Enrico Bottazzi (Developer) and Shrey Jain (Researcher and PM)
 
 Enrico Bottazzi is a ZK Developer at Polygon ID and Shrey Jain is a Web3 Researcher at Microsoft.
