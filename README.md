@@ -2,6 +2,8 @@
 
 We have individual minimal disclosure. Designated Verifier Proofs (DVPs) enable collective minimal disclosure. In doing so, we can maintain the integrity of information within a set of selected agents. This repository is designed to enable people to build DVPs into their social applications and can be done both on and off-chain. It is designed to be compatible for EVM based applications. 
 
+Paper on DVPs to be released soon. 
+
 Core Team: Enrico Bottazzi (Developer) and Shrey Jain (Researcher and PM)
 
 Enrico Bottazzi is a ZK Developer at Polygon ID and Shrey Jain is a Web3 Researcher at Microsoft.
