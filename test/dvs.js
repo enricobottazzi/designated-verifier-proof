@@ -26,7 +26,6 @@ describe("Designated Verifier Testing", function async() {
     // Generate a third random wallet
     const randomWallet = ethers.Wallet.createRandom()
     let randomWalletPrivKey = randomWallet.privateKey
-    let randomWalletAddress = randomWallet.address   
 
     describe("Prover to Designated Verifier", function () {
 
@@ -51,10 +50,6 @@ describe("Designated Verifier Testing", function async() {
             var msghash_array = bigint_to_array(64, 4, msghash_bigint);
             var pub0_array = bigint_to_array(64, 4, proverPubKey.x);
             var pub1_array = bigint_to_array(64, 4, proverPubKey.y);
-
-            // Prover generates a random privkey to use as input as he/she doesn't know verifier's private key
-            const wallet3 = ethers.Wallet.createRandom()
-            let randPrivKey = wallet3.privateKey   
             
             // Generate Witness that satisfies 1st condition (msg signature) and doesn't satisfy 2nd condition (priv key to address)
             let witness = await circuit.calculateWitness({
@@ -62,7 +57,7 @@ describe("Designated Verifier Testing", function async() {
                 s: s_array,
                 msghash: msghash_array,
                 pubkey: [pub0_array, pub1_array],
-                privkey: bigintToTuple(BigInt(randPrivKey)),
+                privkey: bigintToTuple(BigInt(randomWalletPrivKey)),
                 addr: BigInt(verifierAddress)    
                 }, true);
             
@@ -174,7 +169,7 @@ describe("Designated Verifier Testing", function async() {
                                                           "s": s_array,
                                                           "msghash": msghash_array,
                                                           "pubkey": [pub0_array, pub1_array],
-                                                          "privkey": bigintToTuple(BigInt(randPrivKey)),
+                                                          "privkey": bigintToTuple(BigInt(randomWalletPrivKey)),
                                                           "addr": verifierAddress,
                                                         });
             
