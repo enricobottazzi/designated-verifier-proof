@@ -1,4 +1,4 @@
-# Designated Verifier Signature
+# Designated Verifier Signatures
 
 Core Team: Enrico Bottazzi (Developer) and Shrey Jain (Researcher and PM)
 
