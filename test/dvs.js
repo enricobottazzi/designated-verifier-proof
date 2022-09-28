@@ -53,13 +53,13 @@ describe("Designated Verifier Testing", function async() {
             
             // Generate Witness that satisfies 1st condition (msg signature) and doesn't satisfy 2nd condition (priv key to address)
             let witness = await circuit.calculateWitness({
-                r: r_array,
-                s: s_array,
-                msghash: msghash_array,
-                pubkey: [pub0_array, pub1_array],
-                privkey: bigintToTuple(BigInt(randomWalletPrivKey)),
-                addr: BigInt(verifierAddress)    
-                }, true);
+                "r": r_array,
+                "s": s_array,
+                "msghash": msghash_array,
+                "pubkey": [pub0_array, pub1_array],
+                "privkey": bigintToTuple(BigInt(randomWalletPrivKey)),
+                "addr": BigInt(verifierAddress)    
+                });
             
             // Evaluate witness to output 1 (namely true) 
             await circuit.assertOut(witness, {out: "1"})
@@ -90,12 +90,13 @@ describe("Designated Verifier Testing", function async() {
             var pub1_array = bigint_to_array(64, 4, proverPubKey.y);
 
             // Generate Witness that doesn't satisfy the 1st condition and satisfies the 2nd condition condition (msg signature)
-            let witness = await circuit.calculateWitness({"r": r_array,
-            "s": s_array,
-            "msghash": msghash_array,
-            "pubkey": [pub0_array, pub1_array],
-            "privkey": bigintToTuple(BigInt(verifierPrivKey)),
-            "addr": BigInt(verifierAddress)    
+            let witness = await circuit.calculateWitness({
+                "r": r_array,
+                "s": s_array,
+                "msghash": msghash_array,
+                "pubkey": [pub0_array, pub1_array],
+                "privkey": bigintToTuple(BigInt(verifierPrivKey)),
+                "addr": BigInt(verifierAddress)    
             });    
             // Evaluate witness to output 1 (namely true) 
             await circuit.assertOut(witness, {out: "1"})
@@ -125,13 +126,15 @@ describe("Designated Verifier Testing", function async() {
             var pub1_array = bigint_to_array(64, 4, proverPubKey.y);
 
             // Generate Witness that satisfies 1st condition (msg signature) and satisfies 2nd condition (priv key to address)
-            let witness = await circuit.calculateWitness({"r": r_array,
-                                                          "s": s_array,
-                                                          "msghash": msghash_array,
-                                                          "pubkey": [pub0_array, pub1_array],
-                                                          "privkey": bigintToTuple(BigInt(verifierPrivKey)),
-                                                          "addr": verifierAddress,
-                                                        });
+            let witness = await circuit.calculateWitness({
+                "r": r_array,
+                "s": s_array,
+                "msghash": msghash_array,
+                "pubkey": [pub0_array, pub1_array],
+                "privkey": bigintToTuple(BigInt(verifierPrivKey)),
+                "addr": BigInt(verifierAddress)    
+            });    
+
             
             // Evaluate witness to output 1 (namely true) 
             await circuit.assertOut(witness, {out: "1"})
@@ -163,15 +166,15 @@ describe("Designated Verifier Testing", function async() {
             var pub0_array = bigint_to_array(64, 4, proverPubKey.x);
             var pub1_array = bigint_to_array(64, 4, proverPubKey.y);
                     
-
             // Generate Witness that doesn't satisfies 1st condition (msg signature) and doesn't satisfy 2nd condition (priv key to address)
-            let witness = await circuit.calculateWitness({"r": r_array,
-                                                          "s": s_array,
-                                                          "msghash": msghash_array,
-                                                          "pubkey": [pub0_array, pub1_array],
-                                                          "privkey": bigintToTuple(BigInt(randomWalletPrivKey)),
-                                                          "addr": verifierAddress,
-                                                        });
+            let witness = await circuit.calculateWitness({
+                "r": r_array,
+                "s": s_array,
+                "msghash": msghash_array,
+                "pubkey": [pub0_array, pub1_array],
+                "privkey": bigintToTuple(BigInt(randomWalletPrivKey)),
+                "addr": BigInt(verifierAddress)    
+            });    
             
             // Evaluate witness to output 0 (namely false) 
             await circuit.assertOut(witness, {out: "0"})

@@ -65,12 +65,21 @@ With DVS *only the Designated Verifier will be persuaded* by the signature provi
 - Install sub module dependencies `cd circom-ecdsa / npm i`
 - Download ptau inside circuits folder `cd circuits / wget https://hermez.s3-eu-west-1.amazonaws.com/powersOfTau28_hez_final_21.ptau`
 
-## Test and Build 
+## Test 
 
-- To test `mocha`
-- To build `bash scripts/build_dvs.sh`
+- `export NODE_OPTIONS=--max-old-space-size=120480000` to specifies the amount of virtual memory allocated to Node.js in order to avoid Javascript running out of memory
+- `mocha`
 
-## Machine setup to interact with large circuits
+Note; in order to successfully test it a patch to circom_tester must be applied:
+
+Comment out line 90 and 91 inside `node_modules/circom_tester/wasm/tester.js`. These avoids breaking the circom_tester compiler due to warnings included in the circuit compilation.
+
+```js
+// assert(b.stderr == "",
+//   "circom compiler error \n" + b.stderr);
+```
+
+## Machine setup to build
 
 To interact with such large circuits, it is needed to operate with very large machines and set a few tweaks to make it possible:
 
@@ -78,7 +87,8 @@ To interact with such large circuits, it is needed to operate with very large ma
 - [Remove system memory limit](https://hackmd.io/V-7Aal05Tiy-ozmzTGBYPA?view#Remove-system-memory-limit)
 - [Install Snarkjs](https://docs.circom.io/getting-started/installation/#installing-snarkjs)
 - Clone the repo and follow the setup previously described
-- `export NODE_OPTIONS=--max-old-space-size=120480000` to specifies the amount of virtual memory allocated to Node.js in order to avoid Javascript running out of memory
+- `export NODE_OPTIONS=--max-old-space-size=120480000` 
+- To build `bash scripts/build_dvs.sh`
 
 I used a AWS c3.8xlarge instance to build this. This instance has 32vCPU, 60GB of RAM and 30 GB of SSD Memory. The instance will use Ubuntu 20.04. It costs $1.6/hour to run.
 
@@ -108,9 +118,4 @@ The artifacts generated during the Trusted Setup are publicly awailable:
 - circuit **wasm** `wget  https://dvs-eb-bucket.s3.eu-west-2.amazonaws.com/dvs.wasm`
 - verification key **vkey** `wget https://dvs-eb-bucket.s3.eu-west-2.amazonaws.com/vkey.json`
 
-Users will only need to generate/verify proofs. These steps are much less light and can be executed locally inside any browser.
-
-## To do 
-
-- [ ] Circom_tester doesn't compile therefore tests are not working
-- [ ] Test it inside a fronte-end 
+Users will only need these artifact in order to generate/verify proofs. These processes are much less light weight and can be executed locally inside any browser.
