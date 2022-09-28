@@ -18,7 +18,6 @@
   "homepage": "https://github.com/enricobottazzi/selected-verifier-zkp#readme",
   "dependencies": {
     "@noble/secp256k1": "^1.6.3",
-    "@semaphore-protocol/group": "^2.0.0",
     "circom_tester": "^0.0.18",
     "circomlib": "^2.0.5",
     "ethers": "^5.7.0",
