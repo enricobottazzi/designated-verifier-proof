@@ -6,7 +6,7 @@ Paper on DVPs to be released soon.
 
 Core Team: Enrico Bottazzi (Developer) and Shrey Jain (Researcher and PM)
 
-Enrico Bottazzi is a ZK Developer at Polygon ID and Shrey Jain is a Web3 Researcher at Microsoft.
+Enrico Bottazzi is a ZK Developer and Writer at Polygon ID and Shrey Jain is a Web3 Researcher at Microsoft.
 
 _________________________________________________________________________________________________
 
