@@ -1,4 +1,4 @@
-# Designated Verifier Signatures
+# Designated Verifier Proof
 
 We have individual minimal disclosure. Designated Verifier Proofs (DVPs) enable collective minimal disclosure. In doing so, we can maintain the integrity of information within a set of selected agents. This repository is designed to enable people to build DVPs into their social applications and can be done both on and off-chain. It is designed to be compatible for EVM based applications. 
 
@@ -10,9 +10,9 @@ Enrico Bottazzi is a ZK Developer and Writer at Polygon ID and Shrey Jain is a W
 
 _________________________________________________________________________________________________
 
-Designated Verifier Signature is a type of signature that can only be verified by a specific subject. The tipical property of digital signatures (Authentication, Integrity and non-repudiation) are still valid but **only in front of a designated verifier**.
+Designated Verifier Proof is a type of proof that can only be verified by a specific subject. For this example we used a proof of valid ECDSA signature. 
 
-DVS uses Zero Knowledge Proof to achieve that:
+DVP uses Zero Knowledge Proof to achieve that:
 
 - The prover chooses the designated verifier
 - The prover signs the message that wants to be shared with the designated verifier 
@@ -34,7 +34,7 @@ The design of the circuit relies on two main components:
 - [0xPARC `ECDSAVerifyNoPubkeyCheck`](https://github.com/0xPARC/circom-ecdsa/blob/master/circuits/ecdsa.circom#L129): Given a signature (r, s), a message hash, and a secp256k1 public key, it follows ecdsa verification algorithm to extract r' from s, message hash and public key, and then compares r' with r to see if the signaure is correct. The output result is 1 if r' and r are equal, 0 otherwise.
 - [0xPARC `ECDSAPrivToPub`](https://github.com/0xPARC/circom-ecdsa/blob/master/circuits/ecdsa.circom#L14): Given a secp256k1 private key, outputs the corresponding public key by computing (private_key) * G where G is the base point of secp256k1.
 
-The circuit [`DesignatedVerifierSignature`](./circuits/lib/designated-verifier-signature.circom) meshes these two circuits together to verify 2 conditions: 
+The circuit [`DesignatedVerifierProof`](./circuits/lib/designated-verifier-proof.circom) meshes these two circuits together to verify 2 conditions: 
 
 - Is the signature actually been performed by that `pubkey`?
 - Does the private key matches the `Designated Verifier Address`? 
@@ -45,18 +45,18 @@ Each of these conditions generates an intermediate signal => 1 if verifier and 0
 <img src= "./imgs/dvs.png" align="center"/>
 </div>
 
-## Designated Verifier Signature in Practice
+## Designated Verifier Proof in Practice
 
-The essence of the DVS is based on a simple yet very powerful concept. Let's consider an example: Alice signs a message X a passes it to Bob (not using a DVS). In this scenario Bob is able to check that the signature is valid and it actually comes from Alice. Bob can now share this proof with third parties and *anyone will be persuaded* by the fact "Alice signed message X".
+The essence of the DVP is based on a simple yet very powerful concept. Let's consider an example: Alice signs a message X a passes it to Bob (not using a DVP). In this scenario Bob is able to check that the signature is valid and it actually comes from Alice. Bob can now share this proof with third parties and *anyone will be persuaded* by the fact "Alice signed message X".
 
-Using DVS, Alice genates a proof that tells that the signature of message X is valid *OR* that she knows the private key of the designated verifier. This proof is passed to Bob. Bob is aware that his private key hasn't been compromised by Alice, therefore he knows that the proof must be valid because the signature is valid. 
+Using DVP, Alice genates a proof that tells that the signature of message X is valid *OR* that she knows the private key of the designated verifier. This proof is passed to Bob. Bob is aware that his private key hasn't been compromised by Alice, therefore he knows that the proof must be valid because the signature is valid. 
 
 What if Bob wants to persuade other people that "Alice signed message X". He can still share the proof received by Alice to third parties but they wouldn't know whether: 
 
 - The proof verifies because the signature is valid
 - The proof verifies because the verifier know his own private key (which is true by definition)
 
-With DVS *only the Designated Verifier will be persuaded* by the signature provided by the Prover.
+With DVP *only the Designated Verifier will be persuaded* by the signature provided by the Prover.
 
 ## Setup 
 
@@ -88,7 +88,7 @@ To interact with such large circuits, it is needed to operate with very large ma
 - [Install Snarkjs](https://docs.circom.io/getting-started/installation/#installing-snarkjs)
 - Clone the repo and follow the setup previously described
 - `export NODE_OPTIONS=--max-old-space-size=120480000` 
-- To build `bash scripts/build_dvs.sh`
+- To build `bash scripts/build_dvp.sh`
 
 I used a AWS c3.8xlarge instance to build this. This instance has 32vCPU, 60GB of RAM and 30 GB of SSD Memory. The instance will use Ubuntu 20.04. It costs $1.6/hour to run.
 
@@ -98,7 +98,7 @@ The circuit specified in this repo has 1756287 constraints.
 
 All benchmarks were run on the AWS c3.8xlarge machine previously described.
 
-|   |dvs|
+|   |dvp|
 |---|---|
 |Constraints                          |1756287 |
 |Circuit compilation                  |153s    |
