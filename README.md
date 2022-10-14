@@ -119,3 +119,14 @@ The artifacts generated during the Trusted Setup are publicly awailable:
 - verification key **vkey** `wget https://dvs-eb-bucket.s3.eu-west-2.amazonaws.com/vkey.json`
 
 Users will only need these artifact in order to generate/verify proofs. These processes are much less light weight and can be executed locally inside any browser.
+
+## To-do
+
+- [ ] Change Naming of the circuits
+- [ ] Fix package.json
+- [ ] Add as reusable component 
+- [ ] Add circom optimization
+- [ ] Modify tests
+- [ ] Redo Benchmarking and trusted setup 
+- [ ] Create a demo application
+- [ ] Create an independent npm package that test different circuits.

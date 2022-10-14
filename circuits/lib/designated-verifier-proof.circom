@@ -1,7 +1,7 @@
 pragma circom 2.0.0;
 
-include "../../circom-ecdsa/circuits/eth_addr.circom";
 include "../../circom-ecdsa/circuits/ecdsa.circom";
+include "./dvp-component.circom";
 
 template DesignatedVerifierSignature(n, k){
 
@@ -11,16 +11,12 @@ template DesignatedVerifierSignature(n, k){
     signal input msghash[k];
     signal input pubkey[2][k];
 
-    // input for PrivKeyToAddr
+    // input for Designated Verifier Proof
     signal input privkey[k];
-
-    // checker against the output of PrivKeyToAddr
     signal input addr;
 
     // output of the circuit => 1 if at least one of the condition is valid, 0 otherwise
     signal output out;
-
-    component eq1 = IsEqual();
 
     // compute proof #1
     component verifySignature = ECDSAVerifyNoPubkeyCheck(n, k);
@@ -34,22 +30,16 @@ template DesignatedVerifierSignature(n, k){
         }
     }
 
-    // compute proof #2 
-    component pk2addr = PrivKeyToAddr(n, k);
+    // instantiate the dvp component 
+    component dvp = DesignatedVerifierProof(n, k);
+
+    dvp.check1out <== verifySignature.result;
 
     for (var i = 0; i < k; i++) {
-        pk2addr.privkey[i] <== privkey[i];
+        dvp.privkey[i] <== privkey[i];
     }
 
-    // verify proof #2 => Does the computed address match the one provided as input?
-    eq1.in[0] <== pk2addr.addr;
-    eq1.in[1] <== addr;
+    dvp.addr <== addr;
 
-    // check if at least one of the proofs is valid
-    component or = OR();
-
-    or.a <== verifySignature.result;
-    or.b <== eq1.out;
-
-    out <== or.out;
+    out <== dvp.out;
 }
