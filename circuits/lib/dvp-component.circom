@@ -2,7 +2,7 @@ pragma circom 2.0.0;
 
 include "../../circom-ecdsa/circuits/eth_addr.circom";
 
-template DesignatedVerifierProof(n, k){
+template DesignatedVerifierProofComponent(n, k){
 
     signal input check1out;
     signal input privkey[k];

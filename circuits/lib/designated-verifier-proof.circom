@@ -3,7 +3,7 @@ pragma circom 2.0.0;
 include "../../circom-ecdsa/circuits/ecdsa.circom";
 include "./dvp-component.circom";
 
-template DesignatedVerifierSignature(n, k){
+template DesignatedVerifierProof(n, k){
 
     // inputs for ecdsa ECDSAVerifyNoPubkeyCheck circuit
     signal input r[k];
@@ -11,7 +11,7 @@ template DesignatedVerifierSignature(n, k){
     signal input msghash[k];
     signal input pubkey[2][k];
 
-    // input for Designated Verifier Proof
+    // input for Designated Verifier Proof Component
     signal input privkey[k];
     signal input addr;
 
@@ -31,7 +31,7 @@ template DesignatedVerifierSignature(n, k){
     }
 
     // instantiate the dvp component 
-    component dvp = DesignatedVerifierProof(n, k);
+    component dvp = DesignatedVerifierProofComponent(n, k);
 
     dvp.check1out <== verifySignature.result;
 

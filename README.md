@@ -123,10 +123,14 @@ Users will only need these artifact in order to generate/verify proofs. These pr
 ## To-do
 
 - [ ] Change Naming of the circuits
-- [ ] Fix package.json
-- [ ] Add as reusable component 
+- [v] Fix package.json
+- [v] Add as reusable component 
 - [ ] Add circom optimization
-- [ ] Modify tests
-- [ ] Redo Benchmarking and trusted setup 
-- [ ] Create a demo application
-- [ ] Create an independent npm package that test different circuits.
+- [v] Modify tests
+- [ ] Redo Benchmarking and trusted setup
+- [ ] Add instructions to reuse that, based on keccak256
+- [ ] Finish test with multiplier
+- [ ] Modify the illustration
+- [ ] Add scripts to generate and verify the proof 
+
+
