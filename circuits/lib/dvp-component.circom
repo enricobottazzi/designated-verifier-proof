@@ -1,6 +1,6 @@
 pragma circom 2.0.0;
 
-include "../../circom-ecdsa/circuits/eth_addr.circom";
+include "../../node_modules/circom-ecdsa/circuits/eth_addr.circom";
 
 template DesignatedVerifierProofComponent(n, k){
 

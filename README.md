@@ -122,7 +122,7 @@ Users will only need these artifact in order to generate/verify proofs. These pr
 
 ## To-do
 
-- [ ] Change Naming of the circuits
+- [v] Change Naming of the circuits
 - [v] Fix package.json
 - [v] Add as reusable component 
 - [ ] Add circom optimization
