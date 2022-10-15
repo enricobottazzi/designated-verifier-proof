@@ -120,17 +120,46 @@ The artifacts generated during the Trusted Setup are publicly awailable:
 
 Users will only need these artifact in order to generate/verify proofs. These processes are much less light weight and can be executed locally inside any browser.
 
+## Reuse the designated verifier proof as component
+
+The designated verifier proof can be adapted into any circuit. It doesn't have to be the circuit ECDSASignatureVerification circuit used in this example. 
+
+import the lib in the package.json:
+
+```js
+"dependencies": {
+	"designated-verifier-proof": "git+https://github.com/enricobottazzi/designated-verifier-proof.git"
+}
+```
+
+Usage:
+```circom
+pragma circom 2.0.0;
+
+include "../../node_modules/designated-verifier-proof/circuits/lib/dvp-component.circom";
+
+// your circuit
+template Multiplier2() {
+
+}
+
+template DesignatedVerifierMultiplier2(n, k) {
+
+    ...
+    // instantiate the dvp component 
+    component dvp = DesignatedVerifierProofComponent(n, k);
+    ...
+ }
+
+component main = DesignatedVerifierMultiplier2(64, 4);
+```
+
+
 ## To-do
 
-- [v] Change Naming of the circuits
-- [v] Fix package.json
-- [v] Add as reusable component 
 - [ ] Add circom optimization
-- [v] Modify tests
 - [ ] Redo Benchmarking and trusted setup
-- [ ] Add instructions to reuse that, based on keccak256
+- [v] Add instructions to reuse that, based on keccak256
 - [ ] Finish test with multiplier
-- [ ] Modify the illustration
-- [ ] Add scripts to generate and verify the proof 
 
 
