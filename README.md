@@ -154,7 +154,6 @@ template DesignatedVerifierMultiplier2(n, k) {
 component main = DesignatedVerifierMultiplier2(64, 4);
 ```
 
-
 ## To-do
 
 - [ ] Add circom optimization
