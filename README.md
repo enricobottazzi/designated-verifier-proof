@@ -112,7 +112,7 @@ All benchmarks were run on the AWS c3.8xlarge machine previously described.
 
 The most intense step is the proving key generation. Luckily, this process need to be executed only once and can be reused for every application that wants to use this circuit architecture. 
 
-The artifacts generated during the Trusted Setup are publicly awailable:
+The artifacts generated during the Trusted Setup are publicly awailable :
 
 - proving key **zkey** `wget https://dvs-eb-bucket.s3.eu-west-2.amazonaws.com/dvs.zkey` 
 - circuit **wasm** `wget  https://dvs-eb-bucket.s3.eu-west-2.amazonaws.com/dvs.wasm`
