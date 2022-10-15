@@ -1,6 +1,6 @@
 pragma circom 2.0.0;
 
-include "../../circom-ecdsa/circuits/ecdsa.circom";
+include "../../node_modules/circom-ecdsa/circuits/ecdsa.circom";
 include "./dvp-component.circom";
 
 template DesignatedVerifierProof(n, k){
