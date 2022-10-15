@@ -30,7 +30,6 @@
     "@noble/secp256k1": "^1.7.0",
     "circom_tester": "^0.0.18",
     "ethers": "^5.7.1",
-    "snarkjs": "^0.5.0",
-    "circom-ecdsa" : "git+https://github.com/0xPARC/circom-ecdsa.git"
+    "snarkjs": "^0.5.0"
   }
 }

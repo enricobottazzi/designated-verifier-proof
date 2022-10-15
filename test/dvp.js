@@ -106,7 +106,7 @@ describe("Designated Verifier Testing", function async() {
         it("should verify a valid proof (based on both conditions)", async () => {
 
             let circuit = await wasm_tester(path.join(__dirname, "../circuits", "dvp.circom"));
-
+            
             // message to be Signed
             let message = "Hello World!!!!";
             let msghash_bigint = BigInt(ethers.utils.solidityKeccak256(["string"], [message]))
