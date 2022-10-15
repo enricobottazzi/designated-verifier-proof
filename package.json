@@ -1,10 +1,10 @@
 {
   "name": "designated-verifier-proof",
   "version": "1.0.0",
-  "description": "Application of DVP that generates a ECDSA Verfication Zero Knowledge Proof that is only verifiable by a specific subject, namely the Designated Verifier",
+  "description": "Reusable component to add a designated verifier to your zk circom circuit. It means that the zk proof generated from your circuit cannot be verified by someonewho is not the designated verifier (identified by its ethereum public address)",
   "main": "index.js",
   "directories": {
-    "test": "test"
+    "test": "mocha --max-old-space-size=4000"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,7 +13,13 @@
     "type": "git",
     "url": "git+https://github.com/enricobottazzi/designated-verifier-proof.git"
   },
-  "keywords": [],
+  "keywords": [
+    "circom",
+    "zk",
+    "zkSNARK",
+    "designated-verifier-proof",
+    "cryptography"
+  ],
   "author": "Enrico Bottazzi (@enricobottazzi), Shrey Jain (@shreyjain13)",
   "license": "ISC",
   "bugs": {
