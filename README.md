@@ -1,6 +1,6 @@
 # Designated Verifier Proof
 
-We have individual minimal disclosure. Designated Verifier Proofs (DVPs) enable collective minimal disclosure. In doing so, we can maintain the integrity of information within a set of selected agents. This repository is designed to enable people to build DVPs into their social applications and can be done both on and off-chain. It is designed to be compatible for EVM based applications. 
+We have individual minimal disclosure. Designated Verifier Proofs (DVPs) enable collective minimal disclosure. In doing so, we can maintain the integrity of information within a set of selected agents. This repository is designed to enable people to build DVPs into their social applications and can be done both on- and off-chain. It is designed to be compatible for EVM based applications. 
 
 Paper on DVPs to be released soon. 
 
@@ -15,12 +15,12 @@ Designated Verifier Proof is a type of proof that can only be verified by a spec
 DVP uses Zero Knowledge Proof to achieve that:
 
 - The prover chooses the designated verifier
-- The prover signs the message that wants to be shared with the designated verifier 
+- The prover signs the message to be shared with the designated verifier 
 - The prover generates a proof that the signature is valid (1st condition) **OR** he/she knows the private key of the designated verifier (2nd condition)
 - The verifier receives the proof
 
-After the verifier receives the proof, he/she can potentially share it to third parties. But here's the cool thing:
-No one, exept for the designated verifier, would be able to tell if the proof verifies because of the 1st condition or because it has been forged by the designated verifier, therefore verifying because of the 2nd condition.
+After the verifier receives the proof, he/she can potentially share it with third parties. But here's the cool thing:
+No one, except for the designated verifier, can tell if the proof verifies because of the 1st condition or the 2nd condition, i.e. because it has been forged by the designated verifier.
 
 Idea inspired by: 
 
@@ -37,7 +37,7 @@ The design of the circuit relies on two main components:
 The circuit [`DesignatedVerifierProof`](./circuits/lib/designated-verifier-proof.circom) meshes these two circuits together to verify 2 conditions: 
 
 - Is the signature actually been performed by that `pubkey`?
-- Does the private key matches the `Designated Verifier Address`? 
+- Does the private key match the `Designated Verifier Address`? 
 
 Each of these conditions generates an intermediate signal => 1 if verifier and 0 if not verified. These two signals are eventually passed into a `OR` verification that generates the single public output of the circuit: 1 if at least one of the condition verifies or 0 if none of the condition verifies.
 
@@ -47,14 +47,14 @@ Each of these conditions generates an intermediate signal => 1 if verifier and 0
 
 ## Designated Verifier Proof in Practice
 
-The essence of the DVP is based on a simple yet very powerful concept. Let's consider an example: Alice signs a message X a passes it to Bob (not using a DVP). In this scenario Bob is able to check that the signature is valid and it actually comes from Alice. Bob can now share this proof with third parties and *anyone will be persuaded* by the fact "Alice signed message X".
+The essence of the DVP is based on a simple yet very powerful concept. Let's consider an example: Alice signs a message X and passes it to Bob (not using a DVP). In this scenario Bob is able to check that the signature is valid and it actually comes from Alice. Bob can now share this proof with third parties and *anyone will be persuaded* by the fact "Alice signed message X".
 
-Using DVP, Alice genates a proof that tells that the signature of message X is valid *OR* that she knows the private key of the designated verifier. This proof is passed to Bob. Bob is aware that his private key hasn't been compromised by Alice, therefore he knows that the proof must be valid because the signature is valid. 
+Using DVP, Alice generates a proof that the signature of message X is valid *OR* that she knows the private key of the designated verifier. This proof is passed to Bob. Bob is aware that his private key hasn't been compromised by Alice, therefore he knows that the proof must be valid because the signature is valid. 
 
-What if Bob wants to persuade other people that "Alice signed message X". He can still share the proof received by Alice to third parties but they wouldn't know whether: 
+What if Bob wants to persuade other people that "Alice signed message X"? He can still share the proof received by Alice with third parties but they wouldn't know whether: 
 
 - The proof verifies because the signature is valid
-- The proof verifies because the verifier know his own private key (which is true by definition)
+- The proof verifies because the verifier knows his own private key (which is true by definition)
 
 With DVP *only the Designated Verifier will be persuaded* by the signature provided by the Prover.
 
