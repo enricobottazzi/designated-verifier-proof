@@ -10,7 +10,7 @@ Enrico Bottazzi is a ZK Developer and Writer at Polygon ID and Shrey Jain is a W
 
 _________________________________________________________________________________________________
 
-Designated Verifier Proof is a type of proof that can only be verified by a specific subject. For this example we used a proof of valid ECDSA signature. 
+DVP is a reusable component to add a designated verifier to your zk circom circuit. It means that the zk proof generated from your circuit cannot be verified by someonewho is not the designated verifier (identified by its ethereum public address). For this example we used the component to generate a designated verifier proof of valid ECDSA signature. 
 
 DVP uses Zero Knowledge Proof to achieve that:
 
