@@ -12,7 +12,7 @@ ________________________________________________________________________________
 
 Designated Verifier Proof is a type of proof that can only be verified by a specific subject. For this example we used a proof of valid ECDSA signature. 
 
-DVP uses Zero Knowledge Proof to achieve that:
+DVP uses Zero Knowledge Proof to achieve that!
 
 - The prover chooses the designated verifier
 - The prover signs the message to be shared with the designated verifier 
