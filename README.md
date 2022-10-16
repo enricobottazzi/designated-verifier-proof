@@ -1,13 +1,16 @@
-# Designated Verifier Proof
+# Protecting Private Communication Channels with Designated Verifier Proofs 
 
-We have individual minimal disclosure. Designated Verifier Proofs (DVPs) enable collective minimal disclosure. In doing so, we can maintain the integrity of information within a set of selected agents. This repository is designed to enable people to build DVPs into their social applications and can be done both on- and off-chain. It is designed to be compatible for EVM based applications. 
+**Core Team**: Enrico Bottazzi (Developer) and Shrey Jain (Researcher and PM). Enrico Bottazzi is a ZK Developer and Writer at Polygon ID and Shrey Jain is a Web3 Researcher at Microsoft.
 
-Paper on DVPs to be released soon. 
+Despite the progress being made in cryptography, we still lack the technological countermeasures to prevent the public revelation of private communication. Examples of this abuse is seen with China’s digital Yuan, Snowden's Turnkey Tyranny, media giants profiting off of users private information, large technology companies merging with surveillance states, and the rise of foreign and domestic conflicts that spur the erosion of civil liberties [1-3]. 
 
-Core Team: Enrico Bottazzi (Developer) and Shrey Jain (Researcher and PM)
+Regardless of the methods being used to improve both the security and privacy on a communication channel, so long as an agent is able to interpret and understand information, there is no technological tool that can prevent this information from being shared. 
 
-Enrico Bottazzi is a ZK Developer and Writer at Polygon ID and Shrey Jain is a Web3 Researcher at Microsoft.
+The gap that exists today is that we associate privacy with being a mathematical problem that can be solved by cryptography [4]. Privacy is not mathematical, it is fundamentally social. Given that it is a social problem, it requires social data structures to solve it, yet there are few solutions today that look at privacy from this angle. 
 
+To protect our privacy, not only do we need to ensure that our cryptographic tools withstand the test of quantum computers, but we also need to design social data structures that can prevent information from being persuasive in its shared form (having a 3rd party believe private information) [5-6]. Designated verifier proofs (DVPs) were introduced in 1996 as a social data structure in the form of a cryptographic scheme to ensure that only a designated verifier is persuaded of information being communicated to them and any 3rd party is unsure whether the designated verifier is telling the truth or not [7]. 
+
+This repository aims at providing the tools for builders to use DVPs for communication more broadly to mitgiate the persuasiveness of private information in its shared form. 
 _________________________________________________________________________________________________
 
 DVP is a reusable component to add a designated verifier to your zk circom circuit. It means that the zk proof generated from your circuit cannot be verified by someonewho is not the designated verifier (identified by its ethereum public address). For this example we used the component to generate a designated verifier proof of valid ECDSA signature. 
