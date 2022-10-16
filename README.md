@@ -128,7 +128,5 @@ Users will only need these artifact in order to generate/verify proofs. These pr
 - [1] The, “The digital yuan offers China a way to dodge the dollar,” Economist (London, England: 1843), The Economist, Sep. 05, 2022. Accessed: Oct. 16, 2022. [Online]. Available: https://www.economist.com/finance-and-economics/2022/09/05/the-digital-yuan-offers-china-a-way-to-dodge-the-dollar
 - [2]	E. Snowden, “Edward Snowden on Protecting Activists Against Surveillance,” WIRED, Sep. 18, 2018. https://www.wired.com/story/wired25-edward-snowden-malkia-cyril-activist-surveillance/ (accessed Oct. 16, 2022).
 - [3]	B. X. Chen, “The Battle for Digital Privacy Is Reshaping the Internet,” The New York Times, The New York Times, Sep. 16, 2021. Accessed: Oct. 16, 2022. [Online]. Available: https://www.nytimes.com/2021/09/16/technology/digital-privacy.html.
-
 -[4]	E. Kamenica and M. Gentzkow, “Bayesian Persuasion,” Am. Econ. Rev., vol. 101, no. 6, pp. 2590–2615, Oct. 2011.
-
 -[5]	M. Jakobsson, K. Sako, and R. Impagliazzo, “Designated Verifier Proofs and Their Applications,” Advances in Cryptology — EUROCRYPT ’96, pp. 143–154, 1996.
