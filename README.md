@@ -6,9 +6,9 @@ Despite the progress being made in cryptography, we still lack the technological
 
 Regardless of the methods being used to improve both the security and privacy on a communication channel, so long as an agent is able to interpret and understand information, there is no technological tool that can prevent this information from being shared. 
 
-The gap that exists today is that we associate privacy with being a mathematical problem that can be solved by cryptography [4]. Privacy is not mathematical, it is fundamentally social. Given that it is a social problem, it requires social data structures to solve it, yet there are few solutions today that look at privacy from this angle. 
+The gap that exists today is that we associate privacy with being a mathematical problem that can be solved by cryptography. Privacy is not mathematical, it is fundamentally social. Given that it is a social problem, it requires social data structures to solve it, yet there are few solutions today that look at privacy from this angle. 
 
-To protect our privacy, not only do we need to ensure that our cryptographic tools withstand the test of quantum computers, but we also need to design social data structures that can prevent information from being persuasive in its shared form (having a 3rd party believe private information) [5-6]. Designated verifier proofs (DVPs) were introduced in 1996 as a social data structure in the form of a cryptographic scheme to ensure that only a designated verifier is persuaded of information being communicated to them and any 3rd party is unsure whether the designated verifier is telling the truth or not [7]. 
+To protect our privacy, not only do we need to ensure that our cryptographic tools withstand the test of quantum computers, but we also need to design social data structures that can prevent information from being persuasive in its shared form (having a 3rd party believe private information). Designated verifier proofs (DVPs) were introduced in 1996 as a social data structure in the form of a cryptographic scheme to ensure that only a designated verifier is persuaded of information being communicated to them and any 3rd party is unsure whether the designated verifier is telling the truth or not [5]. 
 
 This repository aims at providing the tools for builders to use DVPs for communication more broadly to mitgiate the persuasiveness of private information in its shared form. 
 _________________________________________________________________________________________________
@@ -123,3 +123,10 @@ The artifacts generated during the Trusted Setup are publicly awailable :
 
 Users will only need these artifact in order to generate/verify proofs. These processes are much less light weight and can be executed locally inside any browser.
 
+**References**
+
+- [1] The, “The digital yuan offers China a way to dodge the dollar,” Economist (London, England: 1843), The Economist, Sep. 05, 2022. Accessed: Oct. 16, 2022. [Online]. Available: https://www.economist.com/finance-and-economics/2022/09/05/the-digital-yuan-offers-china-a-way-to-dodge-the-dollar
+- [2]	E. Snowden, “Edward Snowden on Protecting Activists Against Surveillance,” WIRED, Sep. 18, 2018. https://www.wired.com/story/wired25-edward-snowden-malkia-cyril-activist-surveillance/ (accessed Oct. 16, 2022).
+- [3]	B. X. Chen, “The Battle for Digital Privacy Is Reshaping the Internet,” The New York Times, The New York Times, Sep. 16, 2021. Accessed: Oct. 16, 2022. [Online]. Available: https://www.nytimes.com/2021/09/16/technology/digital-privacy.html.
+-[4]	E. Kamenica and M. Gentzkow, “Bayesian Persuasion,” Am. Econ. Rev., vol. 101, no. 6, pp. 2590–2615, Oct. 2011.
+-[5]	M. Jakobsson, K. Sako, and R. Impagliazzo, “Designated Verifier Proofs and Their Applications,” Advances in Cryptology — EUROCRYPT ’96, pp. 143–154, 1996.
