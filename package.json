@@ -28,7 +28,10 @@
   "homepage": "https://github.com/enricobottazzi/designated-verifier-proof#readme",
   "dependencies": {
     "@noble/secp256k1": "^1.7.0",
+    "@semaphore-protocol/group": "^2.6.1",
+    "@semaphore-protocol/identity": "^2.6.1",
     "circom_tester": "^0.0.18",
+    "circomlib": "^2.0.5",
     "ethers": "^5.7.1",
     "snarkjs": "^0.5.0"
   }
