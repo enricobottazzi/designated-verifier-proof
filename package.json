@@ -29,6 +29,7 @@
   "dependencies": {
     "@noble/secp256k1": "^1.7.0",
     "circom_tester": "^0.0.18",
+    "commander": "^9.4.1",
     "ethers": "^5.7.1",
     "snarkjs": "^0.5.0"
   }

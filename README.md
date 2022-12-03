@@ -91,7 +91,7 @@ To interact with such large circuits, it is needed to operate with very large ma
 - [Install Snarkjs](https://docs.circom.io/getting-started/installation/#installing-snarkjs)
 - Clone the repo and follow the setup previously described
 - `export NODE_OPTIONS=--max-old-space-size=120480000` 
-- To build `bash scripts/build_dvp.sh`
+- To build `bash scripts/setup_dvp.sh`
 
 I used a AWS c3.8xlarge instance to build this. This instance has 32vCPU, 60GB of RAM and 30 GB of SSD Memory. The instance will use Ubuntu 20.04. It costs $1.6/hour to run.
 
@@ -130,3 +130,7 @@ Users will only need these artifact in order to generate/verify proofs. These pr
 - [3]	B. X. Chen, “The Battle for Digital Privacy Is Reshaping the Internet,” The New York Times, The New York Times, Sep. 16, 2021. Accessed: Oct. 16, 2022. [Online]. Available: https://www.nytimes.com/2021/09/16/technology/digital-privacy.html.
 - [4]	E. Kamenica and M. Gentzkow, “Bayesian Persuasion,” Am. Econ. Rev., vol. 101, no. 6, pp. 2590–2615, Oct. 2011.
 - [5]	M. Jakobsson, K. Sako, and R. Impagliazzo, “Designated Verifier Proofs and Their Applications,” Advances in Cryptology — EUROCRYPT ’96, pp. 143–154, 1996.
+
+
+# TO DO 
+

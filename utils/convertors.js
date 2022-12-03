@@ -21,7 +21,7 @@ function bigint_to_array(n, k, x) {
       let ret = [];
       var x_temp = x;
       for (var idx = 0; idx < k; idx++) {
-          ret.push(x_temp % mod);
+          ret.push((x_temp % mod).toString());
           x_temp = x_temp / mod;
       }
       return ret;
@@ -44,6 +44,9 @@ function Uint8Array_to_bigint(x) {
       }
       return ret;
   }
+
+
+https://github.com/enricobottazzi/designated-verifier-proof/blob/9946a1f33f6cc1e7a6e24215b0d2672722eb124e/utils/mt-utils.js
 
 module.exports = {bigintToTuple, bigint_to_array, bigint_to_Uint8Array, Uint8Array_to_bigint}
   
