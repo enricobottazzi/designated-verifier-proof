@@ -2,7 +2,7 @@ const { Command } = require('commander');
 const program = new Command();
 const genSignature = require("./utils/sign.js")
 const genProof = require("./utils/gen-proof.js")
-// const verifyProof = require("../cli-utils/verify-proo.js)
+const verifyProof = require("./utils/verify-proof.js")
 
 program
   .name('dvp')
@@ -17,6 +17,7 @@ program.command('sign')
     await genSignature(message, privateKey)
   });
 
+// add path to dvs.wasm and dvs.zkey here
 program.command('gen-proof')
     .description('Generate DVP')
     .argument('<address of the designated verifier>')
@@ -27,13 +28,9 @@ program.command('gen-proof')
 });
 
 program.command('verify-proof')
-  .description('Split a string into substrings and display as an array')
-  .argument('<string>', 'string to split')
-  .option('--first', 'display just the first substring')
-  .option('-s, --separator <char>', 'separator character', ',')
-  .action((str, options) => {
-    const limit = options.first ? 1 : undefined;
-    console.log(str.split(options.separator, limit));
+  .description('Verify DVP')
+  .action(async () => {
+    await verifyProof()
   });
 
 program.parse();

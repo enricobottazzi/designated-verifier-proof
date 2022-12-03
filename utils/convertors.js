@@ -6,7 +6,7 @@ function bigintToTuple(x) {
   
     var x_temp = x;
     for (var idx = 0; idx < 4; idx++) {
-      ret[idx] = x_temp % mod;
+      ret[idx] = (x_temp % mod).toString();
       x_temp = x_temp / mod;
     }
     return ret;
