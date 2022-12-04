@@ -199,3 +199,12 @@ Where:
 
 - `test-folder/proof.json` and `test-folder/public.json` are the paths where the proof and the public Signal have been saved
 - `artifacts` is the folder where the artifacts have been downloaded from step 1
+
+## To-Do list 
+
+- [ ] Work on the signature function. Need to test that out! 
+- [ ] Modify CLI to support fake proofs
+- [ ] Define testing for the current CLI 
+- [ ] Modify condition to prove that I am the designated verifier. Using ECDSA rather than private key. This goes into DVE Component
+- [ ] Define naming
+- [ ] Define Licence
