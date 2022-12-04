@@ -115,7 +115,7 @@ All benchmarks were run on the AWS c3.8xlarge machine previously described.
 
 The most intense step is the proving key generation. Luckily, this process need to be executed only once and can be reused for every application that wants to use this circuit architecture. 
 
-The artifacts generated during the Trusted Setup are publicly awailable :
+The artifacts generated during the Trusted Setup are publicly available :
 
 - proving key **zkey** `wget https://dvs-eb-bucket.s3.eu-west-2.amazonaws.com/dvs.zkey` 
 - circuit **wasm** `wget  https://dvs-eb-bucket.s3.eu-west-2.amazonaws.com/dvs.wasm`
@@ -131,6 +131,71 @@ Users will only need these artifact in order to generate/verify proofs. These pr
 - [4]	E. Kamenica and M. Gentzkow, “Bayesian Persuasion,” Am. Econ. Rev., vol. 101, no. 6, pp. 2590–2615, Oct. 2011.
 - [5]	M. Jakobsson, K. Sako, and R. Impagliazzo, “Designated Verifier Proofs and Their Applications,” Advances in Cryptology — EUROCRYPT ’96, pp. 143–154, 1996.
 
+## Using the CLI 
 
-# TO DO 
+1. Download the artifacts generated during the trusted setup
 
+```bash
+    mkdir artifacts-folder
+    cd artifacts-folder
+    wget https://dvs-eb-bucket.s3.eu-west-2.amazonaws.com/dvs.zkey
+    wget  https://dvs-eb-bucket.s3.eu-west-2.amazonaws.com/dvs.wasm
+    wget https://dvs-eb-bucket.s3.eu-west-2.amazonaws.com/vkey.json
+```
+
+2. Sign the message object of the DVP using your private key 
+
+```
+node cli/dvp.js sign helloworld 7e4a26d6d34648fdc64848f87fcf798107e6c08b3b4628498b5fdf73304eded8
+```
+
+where `helloworld` is the message to be signed and `7e4a26d6d34648fdc64848f87fcf798107e6c08b3b4628498b5fdf73304eded8` is your private key
+
+Optionally, you can specify the path where to save the signature 
+
+```
+node cli/dvp.js sign helloworld 7e4a26d6d34648fdc64848f87fcf798107e6c08b3b4628498b5fdf73304eded8 -o test-folder/sig.json
+```
+
+If not specified, it will be saved by default to a file named `signature.json` inside your current directory.
+
+3. Generate a Designated Verifier Proof
+
+```
+node cli/dvp.js gen-proof 0x439c9002d40Fb1AfEBc3969B06e9b9F66fd8B3ee artifacts test-folder/sig.json
+```
+
+Where: 
+
+- `0x439c9002d40Fb1AfEBc3969B06e9b9F66fd8B3ee` is the address of the designated verifier 
+- `artifacts` is the folder where the artifacts have been downloaded from step 1
+- `test-folder/sig.json` is where the signature has been saved 
+
+By default, we consider that the PrivateKey of the Designated Verifier is not known by the prover. In that case a random private key is generated. 
+
+In the case the (malicious) prover knows the private key of the designated verifier, this can be passed as optional input 
+
+```
+node cli/dvp.js gen-proof 0x439c9002d40Fb1AfEBc3969B06e9b9F66fd8B3ee artifacts test-folder/sig.json -pkey 7e4a26d6d34648fdc64848f87fcf798107e6c08b3b4628498b5fdf73304eded1
+```
+
+where `7e4a26d6d34648fdc64848f87fcf798107e6c08b3b4628498b5fdf73304eded1` is the private key of the designated verifier.
+
+Additionally, it can be specified where to save the outputs of this command, which are the proof and the public signals. 
+
+```
+node cli/dvp.js gen-proof 0x439c9002d40Fb1AfEBc3969B06e9b9F66fd8B3ee artifacts test-folder/sig.json  -oProof test-folder/proof.json -oPublic test-folder/public.json
+```
+
+If not specified, the will be saved by default to a file named `proof.json` and `public.json` inside your current directory.
+
+4. Verify the Proof
+
+```
+node cli/dvp.js verify-proof test-folder/proof.json test-folder/public.json artifacts                                                                                
+```
+
+Where: 
+
+- `test-folder/proof.json` and `test-folder/public.json` are the paths where the proof and the public Signal have been saved
+- `artifacts` is the folder where the artifacts have been downloaded from step 1
