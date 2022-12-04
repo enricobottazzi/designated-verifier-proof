@@ -1,6 +1,6 @@
 const { Command } = require('commander');
 const program = new Command();
-const genSignature = require("./src/sign.js")
+const {genSignature} = require("./src/sign.js")
 const genProof = require("./src/gen-proof.js")
 const verifyProof = require("./src/verify-proof.js")
 const ethers = require('ethers');

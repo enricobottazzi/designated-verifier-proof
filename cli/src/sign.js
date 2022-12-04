@@ -4,7 +4,10 @@ const ethers = require('ethers');
 const fs = require('fs');
 
 async function genSignature (message, privateKey, path) {
-    const data = await sig(message, privateKey)
+
+  const proverWallet = new ethers.Wallet(privateKey)
+
+    const data = await sig(message, proverWallet)
             
     fs.writeFile(path, JSON.stringify(data), (err) => {
       if (err) {
@@ -16,10 +19,9 @@ async function genSignature (message, privateKey, path) {
     });
 }
 
-async function sig (message, privateKey) {
+async function sig (message, wallet) {
 
-  const proverWallet = new ethers.Wallet(privateKey)
-  let proverPrivateKey = proverWallet.privateKey
+  let proverPrivateKey = wallet.privateKey
   let proverPubKey = Point.fromPrivateKey(BigInt(proverPrivateKey))
 
   let msghash_bigint = BigInt(ethers.utils.solidityKeccak256(["string"], [message]))
@@ -67,5 +69,5 @@ async function sig (message, privateKey) {
 //   return [rArr, sArr];
 // }
 
-module.exports = genSignature, sign
+module.exports = {genSignature, sig}
 
