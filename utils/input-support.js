@@ -1,4 +1,5 @@
 const {bigint_to_array, bigintToTuple} = require ("./convertors.js");
+const ethers = require('ethers');
 
 // utils From https://github.com/personaelabs/heyanon 
 function sigToRSArrays(sig) {

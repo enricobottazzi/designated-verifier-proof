@@ -1,7 +1,7 @@
 const path = require("path");
 const wasm_tester = require("circom_tester").wasm;
 const ethers = require('ethers');
-const {sigm} = require("../cli/src/sign-metamask.js")
+const {sigm} = require("../cli/src/sign.js")
 const {bigintToTuple} = require ("../utils/convertors.js");
 
 const F1Field = require("ffjavascript").F1Field;

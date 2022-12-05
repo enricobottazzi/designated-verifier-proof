@@ -162,13 +162,13 @@ If not specified, it will be saved by default to a file named `signature.json` i
 3. Generate a Designated Verifier Proof
 
 ```
-node cli/dvp.js gen-proof 0x439c9002d40Fb1AfEBc3969B06e9b9F66fd8B3ee artifacts test-folder/sig.json
+node cli/dvp.js gen-proof 0x439c9002d40Fb1AfEBc3969B06e9b9F66fd8B3ee artifacts-folder test-folder/sig.json
 ```
 
 Where: 
 
 - `0x439c9002d40Fb1AfEBc3969B06e9b9F66fd8B3ee` is the address of the designated verifier 
-- `artifacts` is the folder where the artifacts have been downloaded from step 1
+- `artifacts-folder` is the folder where the artifacts have been downloaded from step 1
 - `test-folder/sig.json` is where the signature has been saved 
 
 By default, we consider that the PrivateKey of the Designated Verifier is not known by the prover. In that case a random private key is generated. 
@@ -192,13 +192,13 @@ If not specified, the will be saved by default to a file named `proof.json` and 
 4. Verify the Proof
 
 ```
-node cli/dvp.js verify-proof test-folder/proof.json test-folder/public.json artifacts                                                                                
+node cli/dvp.js verify-proof test-folder/proof.json test-folder/public.json artifacts-folder                                                                               
 ```
 
 Where: 
 
 - `test-folder/proof.json` and `test-folder/public.json` are the paths where the proof and the public Signal have been saved
-- `artifacts` is the folder where the artifacts have been downloaded from step 1
+- `artifacts-folder` is the folder where the artifacts have been downloaded from step 1
 
 ## To-Do list 
 
@@ -208,6 +208,7 @@ Where:
 - [ ] Modify condition to prove that I am the designated verifier. Using ECDSA rather than private key. This goes into DVE Component
 - [ ] Define naming
 - [ ] Define Licence
-- [ ] Find a way to not pass the private key as input but only the signature generated with metamask. Maybe use the sandbox! 
+- [ ] Find a way to not pass the private key as input but only the signature generated with metamask. Maybe use the sandbox! Reduce it in one single step to generate the proof. 
+- [ ] How to support space in inputs for CLI "hello World" rather then "helloworld" 
 - [x] Remove unnecassary utils
 

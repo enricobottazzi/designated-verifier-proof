@@ -1,5 +1,4 @@
-const {sign, Point} = require('@noble/secp256k1')
-const {bigint_to_array, bigint_to_Uint8Array, Uint8Array_to_bigint } = require ("../../utils/convertors.js");
+const {sigToRSArrays, msgToMsgHashInput, pubkeyToXYArrays } = require ("../../utils/input-support.js");
 const ethers = require('ethers');
 const fs = require('fs');
 
@@ -7,7 +6,7 @@ async function genSignature (message, privateKey, path) {
 
   const proverWallet = new ethers.Wallet(privateKey)
 
-    const data = await sig(message, proverWallet)
+    const data = await sign(message, proverWallet)
             
     fs.writeFile(path, JSON.stringify(data), (err) => {
       if (err) {
@@ -19,33 +18,21 @@ async function genSignature (message, privateKey, path) {
     });
 }
 
-async function sig (message, signer) {
+// retrieve pubkey from address later on
+async function sign (message, signer) {
 
-  let proverPrivateKey = signer.privateKey
-  let proverPubKey = Point.fromPrivateKey(BigInt(proverPrivateKey))
+    const sig = await signer.signMessage(message)
+    const [r, s] = sigToRSArrays(sig)
+    let publiclyVisiblePubKey = signer.publicKey
 
-  let msghash_bigint = BigInt(ethers.utils.solidityKeccak256(["string"], [message]))
-  let msghash = bigint_to_Uint8Array(msghash_bigint);    
-  var sig = await sign(msghash, bigint_to_Uint8Array(BigInt(proverPrivateKey)), {canonical: true, der: false})
-  var r = sig.slice(0, 32);
-  var r_bigint = Uint8Array_to_bigint(r);
-  var s = sig.slice(32, 64);
-  var s_bigint = Uint8Array_to_bigint(s);
-
-  var r_array = bigint_to_array(64, 4, r_bigint);
-  var s_array = bigint_to_array(64, 4, s_bigint);
-  var msghash_array = bigint_to_array(64, 4, msghash_bigint);
-  var pub0_array = bigint_to_array(64, 4, proverPubKey.x);
-  var pub1_array = bigint_to_array(64, 4, proverPubKey.y);
-
-  const data = {
-    "r": r_array,
-    "s": s_array,
-    "msghash": msghash_array,
-    "pubkey": [pub0_array, pub1_array]
-  };
-          
-  return data 
+    const data = {
+    "r": r,
+    "s": s,
+    "msghash": msgToMsgHashInput(message),
+    "pubkey": pubkeyToXYArrays(publiclyVisiblePubKey)
+    };
+            
+    return data 
 }
 
 // // You can if and only if a transaction has been sent from the account
@@ -63,7 +50,6 @@ async function sig (message, signer) {
 //   return publicKey
 // }
 
-module.exports = {genSignature, sig}
-
+module.exports = {genSignature, sign}
 
 
