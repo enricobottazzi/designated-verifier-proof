@@ -19,6 +19,8 @@ async function genSignature (message, privateKey, path) {
     });
 }
 
+// replace it with ethers signature 
+// Make it working inside the circuit
 async function sig (message, signer, publiclyVisibleSignerAddress) {
 
   let proverPrivateKey = signer.privateKey
@@ -52,6 +54,7 @@ async function sig (message, signer, publiclyVisibleSignerAddress) {
 async function getPubKeyFromAddress (address) {
 
   // Need to look up for a signature executed by this address on etherscan
+  // https://ethereum.stackexchange.com/questions/13778/get-public-key-of-any-ethereum-account/13892
 
   // Fetch the public Key
   const publicKey = ethers.utils.recoverPublicKey(
