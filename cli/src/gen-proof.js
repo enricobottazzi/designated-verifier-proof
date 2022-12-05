@@ -1,12 +1,12 @@
 const fs = require('fs');
-const {bigintToTuple} = require ("../../utils/convertors.js");
+const {parsePrivateKey} = require ("../../utils/input-support.js");
 const snarkjs = require('snarkjs')
 
 async function generateProof(address, paths, designatedVerifierPrivateKey) {
 
 let input = await readFileData(`${paths.pathToSignature}`);
 
-input.privkey = bigintToTuple(BigInt(designatedVerifierPrivateKey))
+input.privkey = parsePrivateKey(designatedVerifierPrivateKey)
 input.addr = BigInt(address).toString()
 
 console.log("Consuming your CPU to generate the proof ... It usally take around 5 mins")

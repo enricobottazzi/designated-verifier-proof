@@ -46,7 +46,5 @@ function Uint8Array_to_bigint(x) {
   }
 
 
-https://github.com/enricobottazzi/designated-verifier-proof/blob/9946a1f33f6cc1e7a6e24215b0d2672722eb124e/utils/mt-utils.js
-
 module.exports = {bigintToTuple, bigint_to_array, bigint_to_Uint8Array, Uint8Array_to_bigint}
   

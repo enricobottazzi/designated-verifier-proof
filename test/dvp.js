@@ -1,8 +1,7 @@
 const path = require("path");
 const wasm_tester = require("circom_tester").wasm;
 const ethers = require('ethers');
-const {Point} = require('@noble/secp256k1')
-const {sig} = require("../cli/src/sign.js")
+const {sigm} = require("../cli/src/sign-metamask.js")
 const {bigintToTuple} = require ("../utils/convertors.js");
 
 const F1Field = require("ffjavascript").F1Field;
@@ -34,7 +33,7 @@ describe("Designated Verifier Testing", function async() {
 
             // message to be Signed
             let message = "Hello World!!!!";
-            var data = await sig(message, proverWallet)
+            var data = await sign(message, proverWallet)
             
             // Generate Witness that satisfies 1st condition (msg signature) and doesn't satisfy 2nd condition (priv key to address)
             let witness = await circuit.calculateWitness({
@@ -90,43 +89,28 @@ describe("Designated Verifier Testing", function async() {
         //     await circuit.checkConstraints(witness);
         // });
 
-        // it("should verify a valid proof (based on both conditions)", async () => {
+        it("should verify a valid proof (based on both conditions)", async () => {
 
-        //     let circuit = await wasm_tester(path.join(__dirname, "../circuits", "dvp.circom"));
+            let circuit = await wasm_tester(path.join(__dirname, "../circuits", "dvp.circom"));
             
-        //     // message to be Signed
-        //     let message = "Hello World!!!!";
-        //     let msghash_bigint = BigInt(ethers.utils.solidityKeccak256(["string"], [message]))
-        //     let msghash = bigint_to_Uint8Array(msghash_bigint);     
-           
-        //     // prover signs the hashed message
-        //     var sig = await sign(msghash, bigint_to_Uint8Array(BigInt(proverPrivKey)), {canonical: true, der: false})
-        //     var r = sig.slice(0, 32);
-        //     var r_bigint = Uint8Array_to_bigint(r);
-        //     var s = sig.slice(32, 64);
-        //     var s_bigint = Uint8Array_to_bigint(s);
+            // message to be Signed
+            let message = "Hello World!!!!";
+            var data = await sign(message, proverWallet)
 
-        //     var r_array = bigint_to_array(64, 4, r_bigint);
-        //     var s_array = bigint_to_array(64, 4, s_bigint);
-        //     var msghash_array = bigint_to_array(64, 4, msghash_bigint);
-        //     var pub0_array = bigint_to_array(64, 4, proverPubKey.x);
-        //     var pub1_array = bigint_to_array(64, 4, proverPubKey.y);
+            // Generate Witness that satisfies 1st condition (msg signature) and satisfies 2nd condition (priv key to address)
+            let witness = await circuit.calculateWitness({
+                "r": data.r,
+                "s": data.s,
+                "msghash": data.msghash,
+                "pubkey": data.pubkey,
+                "privkey": bigintToTuple(BigInt(verifierPrivKey)),
+                "addr": BigInt(verifierAddress)    
+            });    
 
-        //     // Generate Witness that satisfies 1st condition (msg signature) and satisfies 2nd condition (priv key to address)
-        //     let witness = await circuit.calculateWitness({
-        //         "r": r_array,
-        //         "s": s_array,
-        //         "msghash": msghash_array,
-        //         "pubkey": [pub0_array, pub1_array],
-        //         "privkey": bigintToTuple(BigInt(verifierPrivKey)),
-        //         "addr": BigInt(verifierAddress)    
-        //     });    
-
-            
-        //     // Evaluate witness to output 1 (namely true) 
-        //     await circuit.assertOut(witness, {out: "1"})
-        //     await circuit.checkConstraints(witness);
-        // });
+            // Evaluate witness to output 1 (namely true) 
+            await circuit.assertOut(witness, {out: "1"})
+            await circuit.checkConstraints(witness);
+        });
 
 
         // it("shouldn't verify an invalid proof (both conditions are not met) coming from the prover", async () => {

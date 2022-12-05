@@ -208,3 +208,6 @@ Where:
 - [ ] Modify condition to prove that I am the designated verifier. Using ECDSA rather than private key. This goes into DVE Component
 - [ ] Define naming
 - [ ] Define Licence
+- [ ] Find a way to not pass the private key as input but only the signature generated with metamask. Maybe use the sandbox! 
+- [x] Remove unnecassary utils
+
