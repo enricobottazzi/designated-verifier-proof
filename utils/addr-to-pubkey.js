@@ -1,10 +1,13 @@
 const ethers = require('ethers');
+require('dotenv').config()
 
 async function getPubKeyFromAddress (address) {
 
+  console.log()
+
     const etherscanProvider = new ethers.providers.EtherscanProvider(
       "homestead",
-      "5GWBFK6E3ZZD7CAYYHCUXDQZSX53WHXNIT"
+      `${process.env.API_KEY_ETHERSCAN}`
     );
         
     const pubKey = await etherscanProvider
@@ -21,7 +24,7 @@ async function getPubKeyFromAddress (address) {
   // Add error handling here
 async function getPubKeyFromtxHash (txHash) {
     const infuraProvider = new ethers.providers.JsonRpcProvider(
-      "https://mainnet.infura.io/v3/155cf09985804b578a513a4dfbefbe04"
+      `https://mainnet.infura.io/v3/${process.env.API_KEY_INFURA}`
     );
   
     const tx = await infuraProvider.getTransaction(txHash);
