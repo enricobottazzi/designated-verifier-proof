@@ -143,40 +143,26 @@ Users will only need these artifact in order to generate/verify proofs. These pr
     wget https://dvs-eb-bucket.s3.eu-west-2.amazonaws.com/vkey.json
 ```
 
-2. Sign the message object of the DVP using your private key 
+2. Generate the proof
 
 ```
-node cli/dvp.js sign helloworld 7e4a26d6d34648fdc64848f87fcf798107e6c08b3b4628498b5fdf73304eded8
-```
-
-where `helloworld` is the message to be signed and `7e4a26d6d34648fdc64848f87fcf798107e6c08b3b4628498b5fdf73304eded8` is your private key
-
-Optionally, you can specify the path where to save the signature 
-
-```
-node cli/dvp.js sign helloworld 7e4a26d6d34648fdc64848f87fcf798107e6c08b3b4628498b5fdf73304eded8 -o test-folder/sig.json
-```
-
-If not specified, it will be saved by default to a file named `signature.json` inside your current directory.
-
-3. Generate a Designated Verifier Proof
-
-```
-node cli/dvp.js gen-proof 0x439c9002d40Fb1AfEBc3969B06e9b9F66fd8B3ee artifacts-folder test-folder/sig.json
+node cli/dvp.js gen-proof 0xaf365471712541c890ccfefbb999ead07c1a9de89dd31ee78b3414b7afe0bcd0616171dd276e19e3a2b259be28693ea434bc16d6dbd317a1411f45a61a5f16b41b helloWorld 0x9992847Cb19492673457f7f088Eb2d102F98aeCC 0xe4D9621321e77B499392801d08Ed68Ec5175f204 artifacts-folder
 ```
 
 Where: 
 
-- `0x439c9002d40Fb1AfEBc3969B06e9b9F66fd8B3ee` is the address of the designated verifier 
+- `0xaf365471712541c890ccfefbb999ead07c1a9de89dd31ee78b3414b7afe0bcd0616171dd276e19e3a2b259be28693ea434bc16d6dbd317a1411f45a61a5f16b41b` is a standard [EIP-191 signature](https://docs.ethers.io/v5/api/signer/#Signer-signMessage). You can generate one using [this Sandbox](https://codesandbox.io/s/react-eth-metamask-signatures-ibuxj?file=/src/SignMessage.js)
+- `helloWorld` is the message that has been signed 
+- `0x9992847Cb19492673457f7f088Eb2d102F98aeCC` is the address of the alleged signer. This is a public signal inside the zk program. Note that this doesn't have to match the address of the **actual** signer of the message. A malicious prover can arbitrarly choose the address to put here.
+- `0xe4D9621321e77B499392801d08Ed68Ec5175f204` is the address of the designated verifier has been saved
 - `artifacts-folder` is the folder where the artifacts have been downloaded from step 1
-- `test-folder/sig.json` is where the signature has been saved 
 
 By default, we consider that the PrivateKey of the Designated Verifier is not known by the prover. In that case a random private key is generated. 
 
 In the case the (malicious) prover knows the private key of the designated verifier, this can be passed as optional input 
 
 ```
-node cli/dvp.js gen-proof 0x439c9002d40Fb1AfEBc3969B06e9b9F66fd8B3ee artifacts test-folder/sig.json -pkey 7e4a26d6d34648fdc64848f87fcf798107e6c08b3b4628498b5fdf73304eded1
+node cli/dvp.js gen-proof 0xaf365471712541c890ccfefbb999ead07c1a9de89dd31ee78b3414b7afe0bcd0616171dd276e19e3a2b259be28693ea434bc16d6dbd317a1411f45a61a5f16b41b helloWorld 0x9992847Cb19492673457f7f088Eb2d102F98aeCC 0xe4D9621321e77B499392801d08Ed68Ec5175f204 artifacts-folder -pkey 7e4a26d6d34648fdc64848f87fcf798107e6c08b3b4628498b5fdf73304eded1
 ```
 
 where `7e4a26d6d34648fdc64848f87fcf798107e6c08b3b4628498b5fdf73304eded1` is the private key of the designated verifier.
@@ -189,15 +175,15 @@ node cli/dvp.js gen-proof 0x439c9002d40Fb1AfEBc3969B06e9b9F66fd8B3ee artifacts t
 
 If not specified, the will be saved by default to a file named `proof.json` and `public.json` inside your current directory.
 
-4. Verify the Proof
+3. Verify the Proof
 
 ```
-node cli/dvp.js verify-proof test-folder/proof.json test-folder/public.json artifacts-folder                                                                               
+node cli/dvp.js verify-proof proof.json public.json artifacts-folder                                                                               
 ```
 
 Where: 
 
-- `test-folder/proof.json` and `test-folder/public.json` are the paths where the proof and the public Signal have been saved
+- `proof.json` and `public.json` are the paths where the proof and the public Signals have been saved
 - `artifacts-folder` is the folder where the artifacts have been downloaded from step 1
 
 ## To-Do list 
@@ -220,8 +206,9 @@ Where:
 - [ ] Add error handling for api
 - [ ] Remove gen Signature Function
 - [ ] Use build function inside the test too!!
-- [ ] Support test for malicious prover! 
-- [ ] Add guide for the new CLI
+- [ ] Support test for malicious prover and fix terminology here
+- [x] Add guide for the new CLI
+- [ ] Fix apis Endpoints
 
 
 

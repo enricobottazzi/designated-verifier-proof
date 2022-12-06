@@ -70,9 +70,6 @@ async function getPubKeyFromtxHash (txHash) {
     const msgHash = ethers.utils.keccak256(raw); // as specified by ECDSA
     const msgBytes = ethers.utils.arrayify(msgHash); // create binary hash
     const recoveredPubKey = ethers.utils.recoverPublicKey(msgBytes, signature);
-    // const recoveredAddress = ethers.utils.recoverAddress(msgBytes, signature);
-    // // Do error handling here! It must match with address inputted
-    // // console.log(recoveredAddress);
     return recoveredPubKey;
   };
   

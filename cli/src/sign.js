@@ -1,40 +1,22 @@
-const {sigToRSArrays, msgToMsgHashInput, pubkeyToXYArrays } = require ("../../utils/input-support.js");
-const ethers = require('ethers');
-const fs = require('fs');
+// const {sigToRSArrays, msgToMsgHashInput, pubkeyToXYArrays } = require ("../../utils/input-support.js");
 
-// async function genSignature (message, privateKey, path) {
+// // retrieve pubkey from address later on
+// async function sign (message, signer) {
 
-//   const proverWallet = new ethers.Wallet(privateKey)
+//     const sig = 
+//     const [r, s] = sigToRSArrays(sig)
+//     let publiclyVisiblePubKey = signer.publicKey
 
-//     const data = await sign(message, proverWallet)
+//     const data = {
+//     "r": r,
+//     "s": s,
+//     "msghash": msgToMsgHashInput(message),
+//     "pubkey": pubkeyToXYArrays(publiclyVisiblePubKey)
+//     };
             
-//     fs.writeFile(path, JSON.stringify(data), (err) => {
-//       if (err) {
-//         console.error(err);
-//         return;
-//       }
-    
-//       console.log(`Data saved to ${path}`);
-//     });
+//     return data 
 // }
 
-// retrieve pubkey from address later on
-async function sign (message, signer) {
-
-    const sig = await signer.signMessage(message)
-    const [r, s] = sigToRSArrays(sig)
-    let publiclyVisiblePubKey = signer.publicKey
-
-    const data = {
-    "r": r,
-    "s": s,
-    "msghash": msgToMsgHashInput(message),
-    "pubkey": pubkeyToXYArrays(publiclyVisiblePubKey)
-    };
-            
-    return data 
-}
-
-module.exports = {genSignature, sign}
+// module.exports = sign
 
 
