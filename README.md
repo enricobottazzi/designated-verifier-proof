@@ -202,13 +202,12 @@ Where:
 
 ## To-Do list 
 
-- [ ] Work on the signature function. Need to test that out! 
-- [ ] Modify CLI to support fake proofs
+- [x] Work on the signature function. Need to test that out!
+- [x] Remove unnecassary utils
+- [ ] Modify function to support fake proofs 
 - [ ] Define testing for the current CLI 
-- [ ] Modify condition to prove that I am the designated verifier. Using ECDSA rather than private key. This goes into DVE Component
 - [ ] Define naming
 - [ ] Define Licence
-- [ ] Find a way to not pass the private key as input but only the signature generated with metamask. Maybe use the sandbox! Reduce it in one single step to generate the proof. 
+- [ ] Find a way to not pass the private key as input but only the signature generated with metamask. Maybe use the sandbox! Reduce it in one single step to generate the proof.
 - [ ] How to support space in inputs for CLI "hello World" rather then "helloworld" 
-- [x] Remove unnecassary utils
-
+- [ ] Add efficient ecdsa

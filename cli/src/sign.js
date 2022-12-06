@@ -35,20 +35,23 @@ async function sign (message, signer) {
     return data 
 }
 
-// // You can if and only if a transaction has been sent from the account
-// async function getPubKeyFromAddress (address) {
+// You can if and only if a transaction has been sent from the account
+async function getPubKeyFromAddress (address) {
 
-//   // Need to look up for a signature executed by this address on etherscan
-//   // https://ethereum.stackexchange.com/questions/13778/get-public-key-of-any-ethereum-account/13892
+  // fetch a tx from etherscan
+  // if no transaction exist return an error
+  // if there's a transaction we need to process it!
+  // Need to look up for a signature executed by this address on etherscan
+  // https://ethereum.stackexchange.com/questions/13778/get-public-key-of-any-ethereum-account/13892
 
-//   // Fetch the public Key
-//   const publicKey = ethers.utils.recoverPublicKey(
-//     ethers.utils.arrayify(ethers.utils.hashMessage(ethers.utils.arrayify(msghash))),
-//     sig
-//   )
+  // Fetch the public Key
+  const publicKey = ethers.utils.recoverPublicKey(
+    ethers.utils.arrayify(ethers.utils.hashMessage(ethers.utils.arrayify(msghash))),
+    sig
+  )
 
-//   return publicKey
-// }
+  return publicKey
+}
 
 module.exports = {genSignature, sign}
 
