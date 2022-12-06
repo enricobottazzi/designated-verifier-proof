@@ -2,7 +2,6 @@ const path = require("path");
 const wasm_tester = require("circom_tester").wasm;
 const ethers = require('ethers');
 const buildInput = require ("../utils/build-input.js");
-
 const F1Field = require("ffjavascript").F1Field;
 const Scalar = require("ffjavascript").Scalar;
 exports.p = Scalar.fromString("21888242871839275222246405745257275088548364400416034343698204186575808495617");

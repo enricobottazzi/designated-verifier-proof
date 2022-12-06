@@ -190,25 +190,28 @@ Where:
 
 - [x] Work on the signature function. Need to test that out!
 - [x] Remove unnecassary utils
-- [ ] Modify function to support fake proofs 
-- [ ] Define testing for the current CLI 
-- [ ] Define naming
-- [ ] Define Licence
+- [x] Modify function to support fake proofs 
 - [x] Find a way to not pass the private key as input but only the signature generated with metamask. Maybe use the sandbox! Reduce it in one single step to generate the proof.
+- [ ] Add examples in the CLI
+- [ ] Define testing for the current CLI - add 2 examples in Read me + test all the four scenarios both in test and CLI. Benevolent Prover vs Malicious Prover (impersonate someone else)
+- [ ] Support test for malicious prover and fix terminology here
+- [ ] Define naming - DVP and DVS
+- [ ] Define Licence
+- [ ] Add disclaimer for address retrieval. Possible error!
 - [ ] How to support space in inputs for CLI "hello World" rather then "helloworld" 
 - [ ] Add efficient ecdsa
+- [ ] Add error handling for APIs
+- [ ] Fix apis Endpoints and api keys
+- [ ] Add DVP component support here
 
 ## CLI Demo
 
-- [ ] Modify the CLI to support only 2 functions - gen Proof and verify Proof.
-- [ ] Generate proof message, signature, alleged address of signer, address of DV, privateKey of designated verifier
-- [ ] Add a function to build input alltogether
-- [ ] Add error handling for api
-- [ ] Remove gen Signature Function
-- [ ] Use build function inside the test too!!
-- [ ] Support test for malicious prover and fix terminology here
+- [x] Modify the CLI to support only 2 functions - gen Proof and verify Proof.
+- [x] Generate proof message, signature, alleged address of signer, address of DV, privateKey of designated verifier
+- [x] Add a function to build input alltogether
+- [x] Remove gen Signature Function
+- [x] Use build function inside the test too!!
 - [x] Add guide for the new CLI
-- [ ] Fix apis Endpoints
 
 
 
