@@ -1,6 +1,21 @@
 const {bigint_to_array, bigintToTuple} = require ("./convertors.js");
 const ethers = require('ethers');
 
+function buildInput(sig, message, allegedSignerPublicKey, designatedVerifierAddress, designatedVerifierPrivateKey) {
+
+  const [r, s] = sigToRSArrays(sig);
+
+  return {
+    "r": r,
+    "s": s,
+    "msghash": msgToMsgHashInput(message),
+    "pubkey": pubkeyToXYArrays(allegedSignerPublicKey),
+    "privkey": parsePrivateKey(designatedVerifierPrivateKey),
+    "addr": BigInt(designatedVerifierAddress) 
+    }
+
+}
+
 // utils From https://github.com/personaelabs/heyanon 
 function sigToRSArrays(sig) {
 
@@ -42,4 +57,4 @@ function parsePrivateKey(privateKey) {
 
 }
 
-module.exports = {msgToMsgHashInput, pubkeyToXYArrays, sigToRSArrays, parsePrivateKey}
+module.exports = buildInput

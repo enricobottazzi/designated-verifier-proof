@@ -208,6 +208,20 @@ Where:
 - [ ] Define testing for the current CLI 
 - [ ] Define naming
 - [ ] Define Licence
-- [ ] Find a way to not pass the private key as input but only the signature generated with metamask. Maybe use the sandbox! Reduce it in one single step to generate the proof.
+- [x] Find a way to not pass the private key as input but only the signature generated with metamask. Maybe use the sandbox! Reduce it in one single step to generate the proof.
 - [ ] How to support space in inputs for CLI "hello World" rather then "helloworld" 
 - [ ] Add efficient ecdsa
+
+## CLI Demo
+
+- [ ] Modify the CLI to support only 2 functions - gen Proof and verify Proof.
+- [ ] Generate proof message, signature, alleged address of signer, address of DV, privateKey of designated verifier
+- [ ] Add a function to build input alltogether
+- [ ] Add error handling for api
+- [ ] Remove gen Signature Function
+- [ ] Use build function inside the test too!!
+- [ ] Support test for malicious prover! 
+- [ ] Add guide for the new CLI
+
+
+
