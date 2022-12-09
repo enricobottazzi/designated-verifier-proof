@@ -13,14 +13,14 @@ program
 program.command('gen-proof')
     .description('Generate DVP')
     .argument('<signature>', "0xaf365471712541c890ccfefbb999ead07c1a9de89dd31ee78b3414b7afe0bcd0616171dd276e19e3a2b259be28693ea434bc16d6dbd317a1411f45a61a5f16b41b")
-    .argument('<msg that was signed>', "helloWorld")
+    .argument('<path/to/txt/file>', "msg.txt")
     .argument('<alleged address of the signer>', "0x9992847Cb19492673457f7f088Eb2d102F98aeCC")
     .argument('<address of the designated verifier>', "0xA4a3eE27160e2DA1fB2C7dbEDbc7375D70917121")
     .argument('<path/to/folder/containing/artifacts>', "test-folder/artifcats")
     .option('-pkey <private key of the designated verifier>', 'define the private key of the designated verifier')
     .option('-oProof <path/file.json>', 'define the path where to store the file containing the proof', 'proof.json')
     .option('-oPublic <path/file.json>', 'define the path where to store the file containing the public signals', 'public.json')
-    .action(async (sig, message, allegedSignerAddress, designatedVerifierAddress, pathToArtifacts, options) => {
+    .action(async (sig, pathToTxtFile, allegedSignerAddress, designatedVerifierAddress, pathToArtifacts, options) => {
       let designatedVerifierPrivateKey 
       if (options.PKey) {
         const verifierWallet = new ethers.Wallet(options.pkey)
@@ -30,13 +30,14 @@ program.command('gen-proof')
         designatedVerifierPrivateKey = verifierWallet.privateKey        
       }
 
-      let paths = {
+      let paths = { 
+        "pathToMessage": pathToTxtFile,
         "pathToArtifacts" : pathToArtifacts,
         "pathToProof" : options.OProof,
         "pathToPublic" : options.OPublic
       }
   
-  await genProof(sig, message, allegedSignerAddress, designatedVerifierAddress, designatedVerifierPrivateKey, paths)
+  await genProof(sig, allegedSignerAddress, designatedVerifierAddress, designatedVerifierPrivateKey, paths)
 
 });
 

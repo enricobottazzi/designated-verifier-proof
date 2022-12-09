@@ -3,10 +3,14 @@ const getPubKeyFromAddress = require ("../../utils/addr-to-pubkey.js");
 const buildInput = require ("../../utils/build-input.js");
 const snarkjs = require('snarkjs')
 
-async function generateProof(sig, message, allegedSignerAddress, designatedVerifierAddress, designatedVerifierPrivateKey, paths) {
+async function generateProof(sig, allegedSignerAddress, designatedVerifierAddress, designatedVerifierPrivateKey, paths) {
 
 // add error handling here 
 const allegedSignerPubKey = await getPubKeyFromAddress(allegedSignerAddress)
+
+console.log(allegedSignerPubKey)
+
+const message = fs.readFileSync(`${paths.pathToMessage}`, 'utf8');
 
 const input = buildInput(sig, message, allegedSignerPubKey, designatedVerifierAddress, designatedVerifierPrivateKey)
 

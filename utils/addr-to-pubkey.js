@@ -14,20 +14,24 @@ async function getPubKeyFromAddress (address) {
       .getHistory(address)
       .then(async (history) => {
         // first need to fetch a tx in order to use recoverPublicKey()
-        let lastTxIndex = history.length - 1;
+        let lastTxIndex = history.length - 1
         return await getPubKeyFromtxHash(history[lastTxIndex].hash);
-      });
+      })
+      .catch((error) => {
+        ("Couldn't fetch past txs from the address you entered, make sure that this address has performed at least 1 transaction on mainnet")
+        console.error(error);
+      });;
   
     return pubKey
   };
   
-  // Add error handling here
 async function getPubKeyFromtxHash (txHash) {
-    const infuraProvider = new ethers.providers.JsonRpcProvider(
-      `https://mainnet.infura.io/v3/${process.env.API_KEY_INFURA}`
-    );
-  
-    const tx = await infuraProvider.getTransaction(txHash);
+      const etherscanProvider = new ethers.providers.EtherscanProvider(
+        "homestead",
+        `${process.env.API_KEY_ETHERSCAN}`
+      );
+
+    const tx = await etherscanProvider.getTransaction(txHash);
   
     const expandedSig = {
       r: tx.r,
