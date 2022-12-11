@@ -86,8 +86,8 @@ describe("Designated Verifier Testing", function async() {
             // Generate Witness that satisfies 1st condition (msg signature) and doesn't satisfy 2nd condition (priv key to address)
             let witness = await circuit.calculateWitness(input);
             
-            // Evaluate witness to output 1 (namely true) 
-            await circuit.assertOut(witness, {out: "1"})
+            // Evaluate witness to output 0 (namely false) 
+            await circuit.assertOut(witness, {out: "0"})
             await circuit.checkConstraints(witness);
             
         });
