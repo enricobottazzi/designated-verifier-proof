@@ -22,17 +22,17 @@ circom "$CIRCUIT_PATH" --r1cs --wasm --sym --wat --output "$BUILD_DIR"
 end=`date +%s`
 echo "DONE ($((end-start))s)"
 
-echo "****GENERATING WITNESS FOR SAMPLE INPUT****"
-start=`date +%s`
-node "$BUILD_DIR"/"$CIRCUIT_NAME"_js/generate_witness.js "$BUILD_DIR"/"$CIRCUIT_NAME"_js/"$CIRCUIT_NAME".wasm scripts/input-dvp-valid1.json "$BUILD_DIR"/witness.wtns
-end=`date +%s`
-echo "DONE ($((end-start))s)"
+# echo "****GENERATING WITNESS FOR SAMPLE INPUT****"
+# start=`date +%s`
+# node "$BUILD_DIR"/"$CIRCUIT_NAME"_js/generate_witness.js "$BUILD_DIR"/"$CIRCUIT_NAME"_js/"$CIRCUIT_NAME".wasm scripts/sample-inputs/input-dvp-valid1.json "$BUILD_DIR"/witness.wtns
+# end=`date +%s`
+# echo "DONE ($((end-start))s)"
 
-echo "****EXPORTING WITNESS TO JSON ****"
-start=`date +%s`
-snarkjs wtns export json "$BUILD_DIR"/witness.wtns "$BUILD_DIR"/witness.json
-end=`date +%s`
-echo "DONE ($((end-start))s)"
+# echo "****EXPORTING WITNESS TO JSON ****"
+# start=`date +%s`
+# snarkjs wtns export json "$BUILD_DIR"/witness.wtns "$BUILD_DIR"/witness.json
+# end=`date +%s`
+# echo "DONE ($((end-start))s)"
 
 echo "****GENERATING ZKEY 0****"
 start=`date +%s`
@@ -65,14 +65,14 @@ snarkjs zkey export verificationkey "$BUILD_DIR"/"$CIRCUIT_NAME".zkey "$BUILD_DI
 end=`date +%s`
 echo "DONE ($((end-start))s)"
 
-echo "****GENERATING PROOF FOR SAMPLE INPUT****"
-start=`date +%s`
-snarkjs groth16 prove "$BUILD_DIR"/"$CIRCUIT_NAME".zkey "$BUILD_DIR"/witness.wtns "$BUILD_DIR"/proof.json "$BUILD_DIR"/public.json
-end=`date +%s`
-echo "DONE ($((end-start))s)"
+# echo "****GENERATING PROOF FOR SAMPLE INPUT****"
+# start=`date +%s`
+# snarkjs groth16 prove "$BUILD_DIR"/"$CIRCUIT_NAME".zkey "$BUILD_DIR"/witness.wtns "$BUILD_DIR"/proof.json "$BUILD_DIR"/public.json
+# end=`date +%s`
+# echo "DONE ($((end-start))s)"
 
-echo "****VERIFYING PROOF FOR SAMPLE INPUT****"
-start=`date +%s`
-snarkjs groth16 verify "$BUILD_DIR"/vkey.json "$BUILD_DIR"/public.json "$BUILD_DIR"/proof.json
-end=`date +%s`
-echo "DONE ($((end-start))s)"
+# echo "****VERIFYING PROOF FOR SAMPLE INPUT****"
+# start=`date +%s`
+# snarkjs groth16 verify "$BUILD_DIR"/vkey.json "$BUILD_DIR"/public.json "$BUILD_DIR"/proof.json
+# end=`date +%s`
+# echo "DONE ($((end-start))s)"

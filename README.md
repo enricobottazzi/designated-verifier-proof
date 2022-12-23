@@ -1,5 +1,7 @@
 # Protecting Private Communication Channels with Designated Verifier Proofs 
 
+> The code in this repo is unaudited and not recommended for production use
+
 **Core Team**: Enrico Bottazzi (Developer) and Shrey Jain (Researcher and PM). Enrico Bottazzi is a ZK Developer and Writer at Polygon ID and Shrey Jain is a Web3 Researcher at Microsoft.
 
 Despite the progress being made in cryptography, we still lack the technological countermeasures to prevent the public revelation of private communication. Examples of this abuse is seen with China’s digital Yuan, Snowden's Turnkey Tyranny, media giants profiting off of users private information, large technology companies merging with surveillance states, and the rise of foreign and domestic conflicts that spur the erosion of civil liberties [1-3]. 
@@ -91,7 +93,7 @@ To interact with such large circuits, it is needed to operate with very large ma
 - [Install Snarkjs](https://docs.circom.io/getting-started/installation/#installing-snarkjs)
 - Clone the repo and follow the setup previously described
 - `export NODE_OPTIONS=--max-old-space-size=120480000` 
-- To build `bash scripts/build_dvp.sh`
+- To build `bash scripts/setup_dvp.sh`
 
 I used a AWS c3.8xlarge instance to build this. This instance has 32vCPU, 60GB of RAM and 30 GB of SSD Memory. The instance will use Ubuntu 20.04. It costs $1.6/hour to run.
 
@@ -115,7 +117,7 @@ All benchmarks were run on the AWS c3.8xlarge machine previously described.
 
 The most intense step is the proving key generation. Luckily, this process need to be executed only once and can be reused for every application that wants to use this circuit architecture. 
 
-The artifacts generated during the Trusted Setup are publicly awailable :
+The artifacts generated during the Trusted Setup are publicly available :
 
 - proving key **zkey** `wget https://dvs-eb-bucket.s3.eu-west-2.amazonaws.com/dvs.zkey` 
 - circuit **wasm** `wget  https://dvs-eb-bucket.s3.eu-west-2.amazonaws.com/dvs.wasm`
@@ -130,3 +132,101 @@ Users will only need these artifact in order to generate/verify proofs. These pr
 - [3]	B. X. Chen, “The Battle for Digital Privacy Is Reshaping the Internet,” The New York Times, The New York Times, Sep. 16, 2021. Accessed: Oct. 16, 2022. [Online]. Available: https://www.nytimes.com/2021/09/16/technology/digital-privacy.html.
 - [4]	E. Kamenica and M. Gentzkow, “Bayesian Persuasion,” Am. Econ. Rev., vol. 101, no. 6, pp. 2590–2615, Oct. 2011.
 - [5]	M. Jakobsson, K. Sako, and R. Impagliazzo, “Designated Verifier Proofs and Their Applications,” Advances in Cryptology — EUROCRYPT ’96, pp. 143–154, 1996.
+
+## Using the CLI 
+
+0. Create a `.env` file in the project directory and add there an Etherscan API KEY following this format: 
+
+```
+API_KEY_ETHERSCAN="XXXXX"
+```
+
+We are gonna use this API in step 2 to retrieve the public key of the alleged signer starting from its address
+
+1. Download the artifacts generated during the trusted setup
+
+```bash
+    mkdir artifacts-folder
+    cd artifacts-folder
+    wget https://dvs-eb-bucket.s3.eu-west-2.amazonaws.com/dvs.zkey
+    wget  https://dvs-eb-bucket.s3.eu-west-2.amazonaws.com/dvs.wasm
+    wget https://dvs-eb-bucket.s3.eu-west-2.amazonaws.com/vkey.json
+```
+
+2. Generate the proof
+
+```
+node cli/dvp.js gen-proof 0xaf365471712541c890ccfefbb999ead07c1a9de89dd31ee78b3414b7afe0bcd0616171dd276e19e3a2b259be28693ea434bc16d6dbd317a1411f45a61a5f16b41b msg.txt 0x9992847Cb19492673457f7f088Eb2d102F98aeCC 0xe4D9621321e77B499392801d08Ed68Ec5175f204 artifacts-folder
+```
+
+Where: 
+
+-`0xaf365471712541c890ccfefbb999ead07c1a9de89dd31ee78b3414b7afe0bcd0616171dd276e19e3a2b259be28693ea434bc16d6dbd317a1411f45a61a5f16b41b` is a standard [EIP-191 signature](https://docs.ethers.io/v5/api/signer/#Signer-signMessage). You can generate one using [this Sandbox](https://codesandbox.io/s/react-eth-metamask-signatures-ibuxj?file=/src/SignMessage.js)
+- `msg.txt` is the path to the file that contains the message that was been signed 
+- `0x9992847Cb19492673457f7f088Eb2d102F98aeCC` is the address of the alleged signer. This is a public signal inside the zk program. Note that this doesn't have to match the address of the **actual** signer of the message. A malicious prover can arbitrarly choose the address to put here.
+- `0xe4D9621321e77B499392801d08Ed68Ec5175f204` is the address of the designated verifier has been saved
+- `artifacts-folder` is the folder where the artifacts have been downloaded from step 1
+
+> Alert: the ECDSA verify circuit takes the public key of the alleged singer as input. Not the address! In order to fetch the public key we need the address to have executed at least one tx on ethereum. Here's the [why](https://ethereum.stackexchange.com/questions/13778/get-public-key-of-any-ethereum-account) and the[how](https://gist.github.com/chrsengel/2b29809b8f7281b8f10bbe041c1b5e00). This means that if the address of the alleged signer you entered has never interacted on Ethereum mainnet, the program won't work
+
+By default, we consider that the PrivateKey of the Designated Verifier is not known by the prover. In that case a random private key is generated. In the case the (malicious) prover knows the private key of the designated verifier, this can be passed as optional input 
+
+```
+node cli/dvp.js gen-proof 0xaf365471712541c890ccfefbb999ead07c1a9de89dd31ee78b3414b7afe0bcd0616171dd276e19e3a2b259be28693ea434bc16d6dbd317a1411f45a61a5f16b41b msg.txt 0x9992847Cb19492673457f7f088Eb2d102F98aeCC 0xe4D9621321e77B499392801d08Ed68Ec5175f204 artifacts-folder -pkey 7e4a26d6d34648fdc64848f87fcf798107e6c08b3b4628498b5fdf73304eded1
+```
+
+where `7e4a26d6d34648fdc64848f87fcf798107e6c08b3b4628498b5fdf73304eded1` is the private key of the designated verifier.
+
+Additionally, it can be specified where to save the outputs of this command, which are the proof and the public signals. 
+
+```
+node cli/dvp.js gen-proof 0x439c9002d40Fb1AfEBc3969B06e9b9F66fd8B3ee artifacts test-folder/sig.json  -oProof test-folder/proof.json -oPublic test-folder/public.json
+```
+
+If not specified, the will be saved by default to a file named `proof.json` and `public.json` inside your current directory.
+
+3. Verify the Proof
+
+```
+node cli/dvp.js verify-proof proof.json public.json artifacts-folder                                                                               
+```
+
+Where: 
+
+- `proof.json` and `public.json` are the paths where the proof and the public Signals have been saved
+- `artifacts-folder` is the folder where the artifacts have been downloaded from step 1
+
+## To-Do list 
+
+- [x] Work on the signature function. Need to test that out!
+- [x] Remove unnecassary utils
+- [x] Modify function to support fake proofs 
+- [x] Find a way to not pass the private key as input but only the signature generated with metamask. Maybe use the sandbox! Reduce it in one single step to generate the proof.
+- [x] Add examples in the CLI
+- [x] Define testing for the current CLI - add 2 examples in Read me + test all the four scenarios both in test and CLI. Benevolent Prover vs Malicious Prover (impersonate someone else)
+- [x] Support test for malicious prover and fix terminology here
+- [x] Define naming - DVP and DVS
+- [x] Define Licence
+- [x] Add Disclaimer for address retrieval. Possible error!
+- [x] How to support space in inputs for CLI "hello World" rather then "helloworld" 
+- [x] Add error handling for APIs
+- [x] Fix apis Endpoints and api keys
+- [ ] Add DVP component support here
+- [x] Remove unnecessary packages
+
+## CLI Demo
+
+- [x] Modify the CLI to support only 2 functions - gen Proof and verify Proof.
+- [x] Generate proof message, signature, alleged address of signer, address of DV, privateKey of designated verifier
+- [x] Add a function to build input alltogether
+- [x] Remove gen Signature Function
+- [x] Use build function inside the test too!!
+- [x] Add guide for the new CLI
+
+## Updates 
+
+- Efficient ECDSA and updates on the DVP Component
+- Moved license to MIT
+- Naming, this is DVS vs DVP compoent
+
+

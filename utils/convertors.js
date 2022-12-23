@@ -6,7 +6,7 @@ function bigintToTuple(x) {
   
     var x_temp = x;
     for (var idx = 0; idx < 4; idx++) {
-      ret[idx] = x_temp % mod;
+      ret[idx] = (x_temp % mod).toString();
       x_temp = x_temp / mod;
     }
     return ret;
@@ -21,7 +21,7 @@ function bigint_to_array(n, k, x) {
       let ret = [];
       var x_temp = x;
       for (var idx = 0; idx < k; idx++) {
-          ret.push(x_temp % mod);
+          ret.push((x_temp % mod).toString());
           x_temp = x_temp / mod;
       }
       return ret;
@@ -44,6 +44,7 @@ function Uint8Array_to_bigint(x) {
       }
       return ret;
   }
+
 
 module.exports = {bigintToTuple, bigint_to_array, bigint_to_Uint8Array, Uint8Array_to_bigint}
   
