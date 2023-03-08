@@ -196,37 +196,10 @@ Where:
 - `proof.json` and `public.json` are the paths where the proof and the public Signals have been saved
 - `artifacts-folder` is the folder where the artifacts have been downloaded from step 1
 
-## To-Do list 
+## Updates
 
-- [x] Work on the signature function. Need to test that out!
-- [x] Remove unnecassary utils
-- [x] Modify function to support fake proofs 
-- [x] Find a way to not pass the private key as input but only the signature generated with metamask. Maybe use the sandbox! Reduce it in one single step to generate the proof.
-- [x] Add examples in the CLI
-- [x] Define testing for the current CLI - add 2 examples in Read me + test all the four scenarios both in test and CLI. Benevolent Prover vs Malicious Prover (impersonate someone else)
-- [x] Support test for malicious prover and fix terminology here
-- [x] Define naming - DVP and DVS
-- [x] Define Licence
-- [x] Add Disclaimer for address retrieval. Possible error!
-- [x] How to support space in inputs for CLI "hello World" rather then "helloworld" 
-- [x] Add error handling for APIs
-- [x] Fix apis Endpoints and api keys
-- [ ] Add DVP component support here
-- [x] Remove unnecessary packages
+- [ ] Create an independent circuit component that can be plugged into every circuit
+- [ ] Make it work like "I know the signature of the designated verifier" rather than "I know the private key of the designated verifier". This is mainly for UX and security reason and it is always advisable not to deal with plain private keys
 
-## CLI Demo
-
-- [x] Modify the CLI to support only 2 functions - gen Proof and verify Proof.
-- [x] Generate proof message, signature, alleged address of signer, address of DV, privateKey of designated verifier
-- [x] Add a function to build input alltogether
-- [x] Remove gen Signature Function
-- [x] Use build function inside the test too!!
-- [x] Add guide for the new CLI
-
-## Updates 
-
-- Efficient ECDSA and updates on the DVP Component
-- Moved license to MIT
-- Naming, this is DVS vs DVP compoent
 
 
