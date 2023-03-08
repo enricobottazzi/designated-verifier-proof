@@ -2,7 +2,7 @@
 
 > The code in this repo is unaudited and not recommended for production use
 
-**Core Team**: Enrico Bottazzi (Developer) and Shrey Jain (Researcher and PM). Enrico Bottazzi is a ZK Developer and Writer at Polygon ID and Shrey Jain is a Web3 Researcher at Microsoft.
+**Core Team**: Enrico Bottazzi (Developer) and Shrey Jain (Researcher and PM). Enrico Bottazzi is an Applied ZK Developer and Shrey Jain is a Web3 Researcher at Microsoft.
 
 Despite the progress being made in cryptography, we still lack the technological countermeasures to prevent the public revelation of private communication. Examples of this abuse is seen with China’s digital Yuan, Snowden's Turnkey Tyranny, media giants profiting off of users private information, large technology companies merging with surveillance states, and the rise of foreign and domestic conflicts that spur the erosion of civil liberties [1-3]. 
 
